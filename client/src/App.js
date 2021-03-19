@@ -1,10 +1,10 @@
-import React from 'react';
-import { Button } from 'antd';
-import './App.css';
+import React from "react";
+import Router from "./router";
+import "./App.css";
 
 const App = () => (
   <div className="App">
-    <Button type="primary">Button</Button>
+    <Router />
   </div>
 );
 
