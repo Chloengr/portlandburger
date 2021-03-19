@@ -23,6 +23,8 @@ const Homepage = () => {
   return (
     <>
       <Header />
+      <h1>Liste de nos Burgers</h1>
+
       <Row justify="space-around" align="middle">
         {burgers.map((burger) => (
           <Col span={4} key={burger.id}>
