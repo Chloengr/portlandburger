@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Burger extends Model {
+  class Panier extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  Burger.init({
-    title: DataTypes.STRING,
-    description: DataTypes.STRING,
-    price: DataTypes.FLOAT,
-    image: DataTypes.STRING
+  Panier.init({
+    date: DataTypes.DATE
   }, {
     sequelize,
-    modelName: 'Burger',
+    modelName: 'Panier',
   });
-  Burger.associate = (models) => {
-    Burger.hasMany(models.Panier_Burger)
+  Panier.associate = (models) => {
+    Panier.belongsTo(models.User)
   }
-  return Burger;
+  Panier.associate = (models) => {
+    Panier.hasMany(models.Panier_Burger)
+  }
+  return Panier;
 };
