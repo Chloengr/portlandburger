@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../models');
-
+const auth = require('../auth/auth')
 /* GET Burgers listing. */
-router.get('/',async function(req, res, next) {
+router.get('/',auth.checkTokenMiddleware,async function(req, res, next) {
     const burgers = await db.Burger.findAll();
     if (burgers) {
         res.json(burgers);
