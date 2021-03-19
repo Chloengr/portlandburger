@@ -1,8 +1,6 @@
 import { PageHeader, Button } from "antd";
 import { Link } from "react-router-dom";
 
-import { ReactComponent as BurgerIcon } from "../assets/burger.svg";
-
 const Header = () => {
   return (
     <div
@@ -15,9 +13,9 @@ const Header = () => {
         ghost={false}
         title="Portland Burger"
         subTitle="Les burgers nantais"
+        avatar={{src: 'https://image.freepik.com/vecteurs-libre/icone-burger-collection-restauration-rapide-icone-nourriture-isolee_194824-6.jpg'}}
         extra={[
           <>
-            {/* <BurgerIcon/> */}
             <Link to="/cart">
               <Button key="1" type="primary">
                 Panier
