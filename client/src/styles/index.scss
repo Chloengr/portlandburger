@@ -1,0 +1,30 @@
+// imports scss files
+@import url('https://fonts.googleapis.com/css2?family=Chango&family=Montserrat:wght@500;700&display=swap');
+///////////////
+// variables //
+///////////////
+$screen-xs: 0;
+$screen-sm: 480px;
+$screen-md: 768px;
+$screen-lg: 992px;
+$screen-xl: 1600px;
+:root {
+    --baseFontSize: 14px;
+    --primary: #32c704;
+    --secondary: #ec3521;
+    --info: #e5cb7a;
+    --error: #ec3521;
+    --success: #32c704;
+}
+
+.title {
+    font-family: 'Chango', cursive;
+}
+
+.bg-secondary {
+    background-color: var(--secondary);
+}
+
+.txt-secondary {
+    color: var(--secondary);
+}
