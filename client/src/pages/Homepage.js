@@ -1,41 +1,42 @@
-import BurgerCard from "../components/BurgerCard";
+import BurgerCard from "../components/BurgerCard/BurgerCard";
 import Header from "../components/Header";
 import { Row, Col } from "antd";
-
-const burgers = [
-  {
-      id: 1,
-    label: "ldkjfh",
-    description: "soidhfv",
-    photo:
-      "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-  },
-  {
-      id: 2,
-    label: "ldkjfh",
-    description: "soidhfv",
-    photo:
-      "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-  },
-];
+import { useApi } from "../contexts/ApiContext";
 
 const Homepage = () => {
+  const { burgers } = useApi();
+
+  const { isLoading, error, data } = burgers.useGetBurgers();
+
+  console.log("data", data);
+
+  if (isLoading) return "Loading...";
+
+  if (error) return "An error has occurred: " + error.message;
+
   return (
     <>
       <Header />
-      <h1>Liste de nos Burgers</h1>
+      <div className="container">
+        <h1 className="title">Venez découvrir nos burgers !</h1>
 
-      <Row justify="space-around" align="middle">
-        {burgers.map((burger) => (
-          <Col span={4} key={burger.id}>
-            <BurgerCard
-              label={burger.label}
-              description={burger.description}
-              visual={burger.photo}
-            />
-          </Col>
-        ))}
-      </Row>
+        <Row gutter={[48, 24]}>
+          {data.map((burger) => (
+            <Col
+              span={{ xs: 12, sm: 8, md: 6, lg: 4 }}
+              key={burger.id}
+              style={{ marginBottom: "2rem" }}
+            >
+              <BurgerCard
+                title={burger.title}
+                description={burger.description}
+                image={burger.image}
+                price={burger.price}
+              />
+            </Col>
+          ))}
+        </Row>
+      </div>
     </>
   );
 };

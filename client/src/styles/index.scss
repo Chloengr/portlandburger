@@ -10,8 +10,8 @@ $screen-lg: 992px;
 $screen-xl: 1600px;
 :root {
     --baseFontSize: 14px;
-    --primary: #32c704;
-    --secondary: #ec3521;
+    --primary: #7B8CDE;
+    --secondary: #F4743B;
     --info: #e5cb7a;
     --error: #ec3521;
     --success: #32c704;
@@ -19,6 +19,8 @@ $screen-xl: 1600px;
 
 .title {
     font-family: 'Chango', cursive;
+    font-size: 4rem;
+    text-align: center;
 }
 
 .bg-secondary {
@@ -27,4 +29,9 @@ $screen-xl: 1600px;
 
 .txt-secondary {
     color: var(--secondary);
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
 }

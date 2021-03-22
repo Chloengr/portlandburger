@@ -1,3 +1,4 @@
+import { ShoppingCartOutlined } from "@ant-design/icons";
 import { PageHeader, Button } from "antd";
 import { Link } from "react-router-dom";
 
@@ -13,11 +14,18 @@ const Header = () => {
         ghost={false}
         title="Portland Burger"
         subTitle="Les burgers nantais"
-        avatar={{src: 'https://image.freepik.com/vecteurs-libre/icone-burger-collection-restauration-rapide-icone-nourriture-isolee_194824-6.jpg'}}
+        avatar={{
+          src:
+            "https://image.freepik.com/vecteurs-libre/icone-burger-collection-restauration-rapide-icone-nourriture-isolee_194824-6.jpg",
+        }}
         extra={[
           <>
             <Link to="/cart">
-              <Button key="1" type="primary">
+              <Button
+                type="primary"
+                shape="round"
+                icon={<ShoppingCartOutlined />}
+              >
                 Panier
               </Button>
             </Link>
