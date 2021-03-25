@@ -41,7 +41,7 @@ router.put('/:id',async function(req, res, next) {
     if (burgerDb) {
 
         burgerDb.title=burger.title;
-        burgerDb.description=burger.title;
+        burgerDb.description=burger.description;
         burgerDb.price=burger.price;
         burgerDb.image=burger.image;
 
