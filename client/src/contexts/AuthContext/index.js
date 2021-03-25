@@ -36,7 +36,7 @@ export const AuthProvider = (props) => {
       const response = await mutateAsync(payload);
 
       localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
-      localStorage.setItem(CURRENT_USER, response.data.username);
+      localStorage.setItem(CURRENT_USER, response.data.id);
       localStorage.setItem(IS_ADMIN, response.data.role === "Admin");
 
       // TODO

@@ -40,7 +40,6 @@ const Burgers = () => {
   const onFinish = async (values) => {
     try {
       const response = await mutateAsync(values);
-      console.log(response);
     } catch (e) {
       notification.open({
         message: e.message,

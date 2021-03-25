@@ -1,5 +1,7 @@
 import Header from "../components/Header";
 import { Table, Space, Button } from "antd";
+import { useApi } from "../contexts/ApiContext";
+import { CURRENT_USER } from "../contexts/AuthContext";
 
 const ShoppingCart = () => {
   const columns = [
@@ -30,33 +32,31 @@ const ShoppingCart = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      quantity: 2,
-      price: 20,
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      quantity: 4,
-      price: 14,
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      quantity: 2,
-      price: 12,
-    },
-  ];
+  const { carts } = useApi();
+  const userId = localStorage.getItem(CURRENT_USER);
+
+  const { isLoading, error, data } = carts.useGetUserPanier(userId);
+
+  if (isLoading) return "Loading...";
+  if (error) return "An error has occurred: " + error.message;
+
+  const formatData = (data) => {
+    return data.map((el) => {
+      return {
+        name: el.Burger.title,
+        quantity: el.qte,
+        price: el.Burger.price,
+      };
+    });
+  };
 
   return (
     <>
       <Header />
       <div className="container">
         <h1>Récapitulatif de votre commande</h1>
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={formatData(data.panier)} />
+        <h2>Total {data.total ? data.total : "ça marche pô"}</h2>
         <Button>Annuler</Button>
         <Button>Payer</Button>
       </div>
