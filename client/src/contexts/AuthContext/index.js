@@ -32,12 +32,9 @@ export const AuthProvider = (props) => {
   );
 
   const login = async (payload) => {
-    console.log("payload", payload);
     try {
       const response = await mutateAsync(payload);
-      console.log("data", response);
 
-      console.log("set user data", response.data);
       localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
       localStorage.setItem(CURRENT_USER, response.data.username);
       localStorage.setItem(IS_ADMIN, response.data.role === "Admin");

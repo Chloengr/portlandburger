@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { callAuthenticatedApi } from "../utils";
 
 export const useGetBurgers = () => {
@@ -8,4 +8,21 @@ export const useGetBurgers = () => {
     );
     return data;
   });
+};
+
+export const useRemoveBurger = () => {
+  return useMutation(
+    (id) => {
+      const { data } = callAuthenticatedApi(
+        `http://localhost:7000/burgers/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      return data;
+    },
+    {
+      throwOnError: true,
+    }
+  );
 };

@@ -18,8 +18,9 @@ const tailLayout = {
 };
 
 const Burgers = () => {
-  const { burgers } = useApi();
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const { burgers } = useApi();
 
   const { mutateAsync } = useMutation((params) =>
     axios.post("http://localhost:7000/burgers", params)
@@ -111,6 +112,7 @@ const Burgers = () => {
               style={{ marginBottom: "2rem" }}
             >
               <BurgerCard
+                id={burger.id}
                 title={burger.title}
                 description={burger.description}
                 image={burger.image}
