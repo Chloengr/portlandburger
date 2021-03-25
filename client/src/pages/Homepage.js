@@ -63,7 +63,7 @@ const Homepage = () => {
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" shape="round">
               Submit
             </Button>
           </Form.Item>

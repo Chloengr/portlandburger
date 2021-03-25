@@ -7,6 +7,7 @@ import { Redirect } from "react-router-dom";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
+import { isAdmin } from "../utils/utils";
 
 const layout = {
   labelCol: { span: 6 },
@@ -59,9 +60,11 @@ const Burgers = () => {
       <div className="container">
         <h1 className="title">Venez découvrir nos burgers !</h1>
         <Row justify="center" align="top" style={{ marginBottom: "2rem" }}>
-          <Button onClick={() => setIsModalVisible(true)}>
-            Ajouter un burger
-          </Button>
+          {isAdmin && (
+            <Button onClick={() => setIsModalVisible(true)} shape="round">
+              Ajouter un burger
+            </Button>
+          )}
           <Modal
             title="Ajouter un burger"
             visible={isModalVisible}

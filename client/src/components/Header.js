@@ -1,6 +1,7 @@
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { PageHeader, Button } from "antd";
 import { Link } from "react-router-dom";
+import { isAdmin } from "../utils/utils";
 
 const Header = () => {
   return (
@@ -18,19 +19,21 @@ const Header = () => {
           src:
             "https://image.freepik.com/vecteurs-libre/icone-burger-collection-restauration-rapide-icone-nourriture-isolee_194824-6.jpg",
         }}
-        extra={[
-          <>
-            <Link to="/cart">
-              <Button
-                type="primary"
-                shape="round"
-                icon={<ShoppingCartOutlined />}
-              >
-                Panier
-              </Button>
-            </Link>
-          </>,
-        ]}
+        extra={
+          !isAdmin && [
+            <>
+              <Link to="/cart">
+                <Button
+                  type="primary"
+                  shape="round"
+                  icon={<ShoppingCartOutlined />}
+                >
+                  Panier
+                </Button>
+              </Link>
+            </>,
+          ]
+        }
       ></PageHeader>
     </div>
   );

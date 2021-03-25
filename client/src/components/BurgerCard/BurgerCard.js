@@ -3,14 +3,17 @@ import { Card } from "antd";
 import { useState } from "react";
 import { useApi } from "../../contexts/ApiContext";
 import ConfirmDelete from "../ConfirmDelete";
+
 import "./BurgerCard.scss";
+import { isAdmin } from "../../utils/utils";
 
 const { Meta } = Card;
 
 const BurgerCard = (props) => {
-  const [isModalVisibleDel, setIsModalVisibleDel] = useState(false);
-
+  const { image, title, description, price } = props;
   const { burgers } = useApi();
+
+  const [isModalVisibleDel, setIsModalVisibleDel] = useState(false);
 
   const { mutate } = burgers.useRemoveBurger();
   const handleOk = () => {
@@ -22,24 +25,32 @@ const BurgerCard = (props) => {
     setIsModalVisibleDel(false);
   };
 
-  const { image, title, description, price } = props;
+  const actionsAdmin = [
+    <ShoppingCartOutlined
+      style={{ fontSize: "25px", color: "white" }}
+      onClick={() => console.log("Ajouter au paniner")}
+    />,
+    <DeleteOutlined
+      style={{ fontSize: "25px", color: "white" }}
+      onClick={() => {
+        setIsModalVisibleDel(true);
+      }}
+    />,
+  ];
+
+  const actionsUser = [
+    <ShoppingCartOutlined
+      style={{ fontSize: "25px", color: "white" }}
+      onClick={() => console.log("Ajouter au paniner")}
+    />,
+  ];
+
   return (
     <>
       <Card
         style={{ width: 300 }}
-        cover={<img alt="example" src={image} />}
-        actions={[
-          <ShoppingCartOutlined
-            style={{ fontSize: "25px", color: "white" }}
-            onClick={() => console.log("Ajouter au paniner")}
-          />,
-          <DeleteOutlined
-            style={{ fontSize: "25px", color: "white" }}
-            onClick={() => {
-              setIsModalVisibleDel(true);
-            }}
-          />,
-        ]}
+        cover={<img alt="image burger" src={image} />}
+        actions={isAdmin ? actionsAdmin : actionsUser}
       >
         <Meta title={title} description={description} />
         <p className="price">
