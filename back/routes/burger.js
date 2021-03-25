@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../models');
-const {checkTokenMiddleware, decodeToken } = require('../auth/auth')
+const {checkTokenMiddleware, decodeToken,isAdminUser } = require('../auth/auth')
 /* GET Burgers listing. */
 router.get('/',checkTokenMiddleware,async function(req, res, next) {
     const burgers = await db.Burger.findAll();
@@ -23,30 +23,18 @@ router.get('/:id',async function(req, res, next) {
         res.sendStatus(404);
     }
 });
-/* GET Burgers listing. */
-router.post('/',checkTokenMiddleware,async function(req, res, next) {
+// POST
+router.post('/',[checkTokenMiddleware,isAdminUser],async function(req, res, next) {
     const burger = req.body;
-
-    var token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeToken(token);
-    const user = await db.User.findOne({ where: { username: decodedToken.username } });
-    console.log(user);
-    if(user.role === 'ADMIN'){
         await db.Burger.create({
             title: burger.title,
             description: burger.description,
             price: burger.price,
             image: burger.image,
           }).then((result) => res.json(result));
-    }else{
-        res.status(401).json({ message: 'Error. You dont have permission to do this' });
-    }
 });
-router.put('/:id',async function(req, res, next) {
-    var token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeToken(token);
-    const user = await db.User.findOne({ where: { username: decodedToken.username } });
-    if(user.role === 'ADMIN'){
+// PUT
+router.put('/:id',[checkTokenMiddleware,isAdminUser],async function(req, res, next) {
         const burgerID = req.params.id;
         const burger = req.body;
         const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
@@ -62,17 +50,9 @@ router.put('/:id',async function(req, res, next) {
         }else{
             res.status(404).json({ message: 'Error. Incorrect Burger Id' })
         }
-    }
-
-    else {
-        res.status(401).json({ message: 'Error. You dont have permission to do this' })
-    }
 });
-router.delete('/:id',async function(req, res, next) {
-    var token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeToken(token);
-    const user = await db.User.findOne({ where: { username: decodedToken.username } });
-    if(user.role === 'ADMIN'){
+router.delete('/:id',[checkTokenMiddleware,isAdminUser],async function(req, res, next) {
+
         const burgerID = req.params.id;    
         const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
         if (burgerDb) {
@@ -81,10 +61,6 @@ router.delete('/:id',async function(req, res, next) {
         }else{
             res.status(404).json({ message: 'Error. Incorrect Burger Id' })
         }
-    }
-    else {
-        res.status(401).json({ message: 'Error. You dont have permission to do this' })
-    }
 });
 
 module.exports = router;
