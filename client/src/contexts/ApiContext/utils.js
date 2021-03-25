@@ -21,17 +21,16 @@ export const callApi = async (url, config) => {
 };
 
 export const callAuthenticatedApi = async (url, config) => {
-  // const jwt = localStorage.getItem(JWT_LOCALSTORAGE_KEY)
+  const jwt = localStorage.getItem(JWT_LOCALSTORAGE_KEY);
 
-  // if (!jwt) {
-  //   return await callApi(url, config);
-  // }
+  if (!jwt) {
+    return await callApi(url, config);
+  }
   return await callApi(url, {
     ...config,
     headers: {
       ...(config?.headers ?? {}),
-      // Authorization: `Bearer ${jwt}`,
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmllIiwiaWF0IjoxNjE2NDIyNzM0LCJleHAiOjE2MTY0MzM1MzR9.tr5yYEAisuz20q4tHlWBVoyEWAV9ni90Mgy5-L7qMEY`,
+      Authorization: `Bearer ${jwt}`,
     },
   });
 };
