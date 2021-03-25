@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-
+const db = require('../models');
 /* Récupération du header bearer */
 const extractBearerToken = headerValue => {
     if (typeof headerValue !== 'string') {
@@ -34,5 +34,22 @@ function generateAccessToken(username) {
     return jwt.sign({username:username}, process.env.TOKEN_SECRET,  { expiresIn: '3 hours' });
   }
 
+function decodeToken(token){
+    const decoded = jwt.verify(token,process.env.TOKEN_SECRET);
+    
+    return decoded;
+}
+const isAdminUser = async (req, res, next) => {
+    var token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeToken(token);
+    const user = await db.User.findOne({ where: { username: decodedToken.username } });
+    if(user.role === 'ADMIN'){
+        next();
+    }else{
+        res.status(401).json({ message: 'Error. You dont have permission to do this' });
+    }
+}
 exports.checkTokenMiddleware = checkTokenMiddleware;
 exports.generateAccessToken = generateAccessToken;
+exports.decodeToken = decodeToken;
+exports.isAdminUser = isAdminUser;
