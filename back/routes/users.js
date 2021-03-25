@@ -10,7 +10,7 @@ router.post('/login', async function(req, res, next) {
   }
 
   // Checking
-  const user = db.User.findOne({ where: { username: req.body.username, password: req.body.password } })
+  const user = await db.User.findOne({ where: { username: req.body.username, password: req.body.password } })
 
   // Pas bon
   if (!user) {
@@ -20,12 +20,20 @@ router.post('/login', async function(req, res, next) {
   const token = auth.generateAccessToken(req.body.username);
 
 
-  return res.json({ access_token: token })
+  return res.json({ access_token: token, username: user.username, role:user.role })
 });
 
 /* POST users. */
 router.post('/register', async function(req, res, next) {
   const user = req.body;
+  const roles = ["ADMIN","USER"];
+  if(!roles.some(e=> e === req.body.role)){
+    return res.status(400).json({ message: 'Error. Wrong role' })
+  }
+  const userfind = await db.User.findOne({ where: { username: req.body.username} })
+  if(userfind){
+    return res.status(400).json({ message: 'Error. Username already exist' })
+  }
   await db.User.create({
       username: user.username,
       password: user.password,

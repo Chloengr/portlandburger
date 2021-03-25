@@ -1,41 +1,73 @@
-import BurgerCard from "../components/BurgerCard/BurgerCard";
-import Header from "../components/Header";
-import { Row, Col } from "antd";
-import { useApi } from "../contexts/ApiContext";
+import { Button, Form, Input } from "antd";
+import { Redirect } from "react-router-dom";
+import { CURRENT_USER, useAuth } from "../contexts/AuthContext";
+
+const layout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 12 },
+};
+const tailLayout = {
+  wrapperCol: { offset: 4, span: 12 },
+};
 
 const Homepage = () => {
-  const { burgers } = useApi();
+  const { login } = useAuth();
+  const onFinish = (values) => {
+    login(values);
+  };
 
-  const { isLoading, error, data } = burgers.useGetBurgers();
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
 
-  console.log("data", data);
-
-  if (isLoading) return "Loading...";
-
-  if (error) return "An error has occurred: " + error.message;
+  const user = localStorage.getItem(CURRENT_USER);
+  if (user) {
+    return <Redirect to="/burgers" />;
+  }
 
   return (
     <>
-      <Header />
-      <div className="container">
-        <h1 className="title">Venez découvrir nos burgers !</h1>
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h1 className="title">Bienvenue cher ami !</h1>
+        <Form
+          style={{
+            width: "50%",
+          }}
+          {...layout}
+          name="basic"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+        >
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Row gutter={[48, 24]}>
-          {data.map((burger) => (
-            <Col
-              span={{ xs: 12, sm: 8, md: 6, lg: 4 }}
-              key={burger.id}
-              style={{ marginBottom: "2rem" }}
-            >
-              <BurgerCard
-                title={burger.title}
-                description={burger.description}
-                image={burger.image}
-                price={burger.price}
-              />
-            </Col>
-          ))}
-        </Row>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </>
   );

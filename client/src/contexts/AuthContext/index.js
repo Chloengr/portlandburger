@@ -1,108 +1,63 @@
-import { useLocation, useNavigate } from "@reach/router";
 import { notification } from "antd";
+import { useNavigate } from "@reach/router";
+import React, { useState } from "react";
+import { useMutation } from "react-query";
+import axios from "axios";
 import jwtDecode from "jwt-decode";
-import { parse } from "query-string";
-import React, { useCallback, useState } from "react";
-import { useMutationLogin } from "../ApiContext/services/auth";
 
 const AuthContext = React.createContext({
-  login: async () => {
-    console.log("coucou");
-  },
-
-  logout: () => {
-    // clear the token in localStorage and the user data
-  },
-
-  setUser: () => {
-    // Set the user data & token
-  },
-
-  data: {
+  login: async () => {},
+  user: {
     user: null,
     isLoggedIn: false,
     isAdmin: false,
     isUser: false,
   },
 });
-
 export const JWT_LOCALSTORAGE_KEY = "jwt";
-export const JWT_REFRESH_LOCALSTORAGE_KEY = "jwt_refresh";
-export const IMPERSONATED_LOCALSTORAGE_KEY = "impersonated";
+export const CURRENT_USER = "user";
+export const IS_ADMIN = "isAdmin";
 
 export const AuthProvider = (props) => {
-  const [data, setData] = useState({
+  const [user, setUser] = useState({
     user: null,
     isLoggedIn: false,
     isAdmin: false,
-    isUser: false,
   });
 
-  let token = "";
-
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const mutateLogin = useMutationLogin();
+  const { mutateAsync } = useMutation((params) =>
+    axios.post("http://localhost:7000/users/login", params)
+  );
 
-  const searchParams = parse(location.search);
-
-  console.log("searchParams.jwt", searchParams.jwt);
-
-  if (searchParams.jwt) {
-    token = searchParams.jwt;
-    localStorage.setItem(JWT_LOCALSTORAGE_KEY, token);
-  } else {
-    token = localStorage.getItem(JWT_LOCALSTORAGE_KEY);
-  }
-
-  if (token && !data.isLoggedIn) {
-    console.log(token);
-    const jwt = jwtDecode(token);
-
-    const now = Date.now() / 1000;
-    if (jwt.exp > now) {
-      setData({
-        user: {
-          id: jwt.id,
-          username: jwt.username,
-          roles: jwt.roles,
-        },
-        isLoggedIn: true,
-        isAdmin: jwt.roles.includes("Admin"),
-        isUser: jwt.roles.includes("User"),
-      });
-    }
-  }
-
-  const setUser = useCallback((token) => {
-    localStorage.setItem(JWT_LOCALSTORAGE_KEY, token);
-    const jwt = jwtDecode(token);
-
-    setData({
-      user: {
-        id: jwt.id,
-        username: jwt.username,
-        roles: jwt.roles,
-      },
-      isLoggedIn: true,
-      isAdmin: jwt.roles.includes("Admin"),
-      isUser: jwt.roles.includes("User"),
-    });
-  }, []);
-
-  const login = async (payload, { redirectTo }) => {
-    console.log("coucou");
+  const login = async (payload) => {
+    console.log("payload", payload);
     try {
-      const { token } = await mutateLogin(payload);
+      const response = await mutateAsync(payload);
+      console.log("data", response);
 
-      console.log("token", token);
+      console.log("set user data", response.data);
+      localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
+      localStorage.setItem(CURRENT_USER, response.data.username);
+      localStorage.setItem(IS_ADMIN, response.data.role === "Admin");
 
-      setUser(token);
+      // TODO
 
-      if (redirectTo) {
-        await navigate(redirectTo);
-      }
+      // const jwt = jwtDecode(response.data.access_token);
+
+      // console.log(jwt);
+
+      // setUser({
+      //   user: {
+      //     username: response.data.username,
+      //     role: response.data.role,
+      //   },
+      //   isLoggedIn: true,
+      //   isAdmin: response.data.role !== "admin",
+      // });
+
+      await navigate("/burgers");
     } catch (e) {
       notification.open({
         message: e.message,
@@ -112,21 +67,6 @@ export const AuthProvider = (props) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem(JWT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(JWT_REFRESH_LOCALSTORAGE_KEY);
-    setData({
-      user: null,
-      isLoggedIn: false,
-      isAdmin: false,
-      isUser: false,
-      isImpersonated: false,
-    });
-    navigate("/");
-  };
-
-  return (
-    <AuthContext.Provider value={{ data, setUser, login, logout }} {...props} />
-  );
+  return <AuthContext.Provider value={{ user, login }} {...props} />;
 };
 export const useAuth = () => React.useContext(AuthContext);
