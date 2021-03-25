@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../models');
-const auth = require('../auth/auth')
+const {checkTokenMiddleware, decodeToken } = require('../auth/auth')
 /* GET Burgers listing. */
-router.get('/',auth.checkTokenMiddleware,async function(req, res, next) {
+router.get('/',checkTokenMiddleware,async function(req, res, next) {
     const burgers = await db.Burger.findAll();
     if (burgers) {
         res.json(burgers);
@@ -24,43 +24,66 @@ router.get('/:id',async function(req, res, next) {
     }
 });
 /* GET Burgers listing. */
-router.post('/',async function(req, res, next) {
+router.post('/',checkTokenMiddleware,async function(req, res, next) {
     const burger = req.body;
-    await db.Burger.create({
-        title: burger.title,
-        description: burger.description,
-        price: burger.price,
-        image: burger.image,
-      }).then((result) => res.json(result));
+
+    var token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeToken(token);
+    const user = await db.User.findOne({ where: { username: decodedToken.username } });
+    console.log(user);
+    if(user.role === 'ADMIN'){
+        await db.Burger.create({
+            title: burger.title,
+            description: burger.description,
+            price: burger.price,
+            image: burger.image,
+          }).then((result) => res.json(result));
+    }else{
+        res.status(401).json({ message: 'Error. You dont have permission to do this' });
+    }
 });
 router.put('/:id',async function(req, res, next) {
-    const burgerID = req.params.id;
-    const burger = req.body;
-    const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
-
-    if (burgerDb) {
-
-        burgerDb.title=burger.title;
-        burgerDb.description=burger.title;
-        burgerDb.price=burger.price;
-        burgerDb.image=burger.image;
-
-        await burgerDb.save();
-        res.json(burgerDb);
+    var token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeToken(token);
+    const user = await db.User.findOne({ where: { username: decodedToken.username } });
+    if(user.role === 'ADMIN'){
+        const burgerID = req.params.id;
+        const burger = req.body;
+        const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
+        if (burgerDb) {
+    
+            burgerDb.title=burger.title;
+            burgerDb.description=burger.description;
+            burgerDb.price=burger.price;
+            burgerDb.image=burger.image;
+    
+            await burgerDb.save();
+            res.json(burgerDb);
+        }else{
+            res.status(404).json({ message: 'Error. Incorrect Burger Id' })
+        }
     }
+
     else {
-        res.sendStatus(404);
+        res.status(401).json({ message: 'Error. You dont have permission to do this' })
     }
 });
 router.delete('/:id',async function(req, res, next) {
-    const burgerID = req.params.id;    
-    const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
-    if (burgerDb) {
-        await burgerDb.destroy();
-        res.sendStatus(200);
+    var token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeToken(token);
+    const user = await db.User.findOne({ where: { username: decodedToken.username } });
+    if(user.role === 'ADMIN'){
+        const burgerID = req.params.id;    
+        const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
+        if (burgerDb) {
+            await burgerDb.destroy();
+            res.sendStatus(200);
+        }else{
+            res.status(404).json({ message: 'Error. Incorrect Burger Id' })
+        }
     }
     else {
-        res.sendStatus(404);
+        res.status(401).json({ message: 'Error. You dont have permission to do this' })
     }
 });
 

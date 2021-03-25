@@ -34,5 +34,12 @@ function generateAccessToken(username) {
     return jwt.sign({username:username}, process.env.TOKEN_SECRET,  { expiresIn: '3 hours' });
   }
 
+function decodeToken(token){
+    const decoded = jwt.verify(token,process.env.TOKEN_SECRET);
+    
+    return decoded;
+}
+
 exports.checkTokenMiddleware = checkTokenMiddleware;
 exports.generateAccessToken = generateAccessToken;
+exports.decodeToken = decodeToken;
