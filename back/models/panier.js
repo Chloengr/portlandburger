@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Panier',
   });
   Panier.associate = (models) => {
-    Panier.belongsTo(models.User)
+    Panier.belongsTo(models.User, {foreignKey:'UserId'})
   }
   Panier.associate = (models) => {
     Panier.hasMany(models.Panier_Burger)
