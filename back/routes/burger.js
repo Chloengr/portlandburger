@@ -1,19 +1,16 @@
 var express = require("express");
 var router = express.Router();
-<<<<<<< HEAD
 const db = require("../models");
 const {
   checkTokenMiddleware,
   decodeToken,
   isAdminUser,
 } = require("../auth/auth");
-=======
 const db = require('../models');
 const multer = require('multer')
 var upload = multer({ dest: 'public/' })
 
 const {checkTokenMiddleware, decodeToken,isAdminUser } = require('../auth/auth')
->>>>>>> 3338c29 (upload image dans l'ajout burger)
 /* GET Burgers listing. */
 router.get("/", checkTokenMiddleware, async function (req, res, next) {
   const burgers = await db.Burger.findAll();
