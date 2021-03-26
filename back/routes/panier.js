@@ -14,6 +14,34 @@ router.get('/', async function (req, res, next) {
 });
 
 /* GET Panier of UserID listing. */
+router.get('/username/:username', async function (req, res, next) {
+    const username = req.params.username;
+    const user = await db.User.findOne({ where: { username: username } });
+    console.log('')
+    const panierDb = await db.Panier.findOne({ where: { UserId: user.id } });
+    if (panierDb) {
+        const panierBurger = await db.Panier_Burger.findAll({ where: { PanierId: panierDb.id } });
+        let total = 0;
+        console.log(panierBurger)
+
+        if (panierBurger) {
+            panierBurger.forEach(async (element, index) => {
+                const burger = await getBurger(element.BurgerId);
+                total += element.qte * burger.price;
+                if (element === panierBurger[panierBurger.length-1]) {
+                    res.json({ panier: panierBurger, total: total });
+                }
+            });
+        }
+        else {
+            res.json({ panier: panierBurger, total: total });
+        }
+    }
+    else {
+        res.sendStatus(404);
+    }
+});
+/* GET Panier of UserID listing. */
 router.get('/:userId', async function (req, res, next) {
     const userId = req.params.userId;
     const panierDb = await db.Panier.findOne({ where: { UserId: userId } });
@@ -39,6 +67,7 @@ router.get('/:userId', async function (req, res, next) {
         res.sendStatus(404);
     }
 });
+
 
 /* POST Create Panier of User listing. */
 router.post('/', async function (req, res, next) {
