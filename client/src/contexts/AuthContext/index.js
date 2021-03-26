@@ -1,5 +1,4 @@
 import { notification } from "antd";
-import { useNavigate } from "@reach/router";
 import React, { useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
@@ -7,6 +6,7 @@ import jwtDecode from "jwt-decode";
 
 const AuthContext = React.createContext({
   login: async () => {},
+  logout: async () => {},
   user: {
     user: null,
     isLoggedIn: false,
@@ -24,8 +24,6 @@ export const AuthProvider = (props) => {
     isLoggedIn: false,
     isAdmin: false,
   });
-
-  const navigate = useNavigate();
 
   const { mutateAsync } = useMutation((params) =>
     axios.post("http://localhost:7000/users/login", params)
@@ -53,8 +51,6 @@ export const AuthProvider = (props) => {
       //   isLoggedIn: true,
       //   isAdmin: response.data.role !== "admin",
       // });
-
-      await navigate("/burgers");
     } catch (e) {
       notification.open({
         message: e.message,
@@ -64,6 +60,18 @@ export const AuthProvider = (props) => {
     }
   };
 
-  return <AuthContext.Provider value={{ user, login }} {...props} />;
+  const logout = () => {
+    localStorage.removeItem(JWT_LOCALSTORAGE_KEY);
+    localStorage.removeItem(CURRENT_USER);
+    localStorage.removeItem(IS_ADMIN);
+
+    // setUser({
+    //   user: null,
+    //   isLoggedIn: false,
+    //   isAdmin: false,
+    // });
+  };
+
+  return <AuthContext.Provider value={{ user, login, logout }} {...props} />;
 };
 export const useAuth = () => React.useContext(AuthContext);

@@ -1,4 +1,4 @@
-import { IS_ADMIN } from "../contexts/AuthContext";
+import { IS_ADMIN, CURRENT_USER } from "../contexts/AuthContext";
 
 export const stringToBoolean = (string) => {
   switch (string) {
@@ -14,3 +14,5 @@ export const stringToBoolean = (string) => {
 };
 
 export const isAdmin = stringToBoolean(localStorage.getItem(IS_ADMIN));
+
+export const userId = localStorage.getItem(CURRENT_USER);

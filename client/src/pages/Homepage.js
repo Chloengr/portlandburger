@@ -1,6 +1,6 @@
 import { Button, Form, Input } from "antd";
-import { Redirect } from "react-router-dom";
-import { CURRENT_USER, useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const layout = {
   labelCol: { span: 4 },
@@ -12,18 +12,20 @@ const tailLayout = {
 
 const Homepage = () => {
   const { login } = useAuth();
+  let history = useHistory();
+
+  const redirectToBurgers = () => {
+    history.push("/burgers");
+  };
+
   const onFinish = (values) => {
     login(values);
+    redirectToBurgers();
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
-  const user = localStorage.getItem(CURRENT_USER);
-  if (user) {
-    return <Redirect to="/burgers" />;
-  }
 
   return (
     <>
