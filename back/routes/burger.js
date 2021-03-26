@@ -1,14 +1,17 @@
 var express = require("express");
 var router = express.Router();
 const db = require("../models");
-const {
-  checkTokenMiddleware,
-  decodeToken,
-  isAdminUser,
-} = require("../auth/auth");
-const db = require('../models');
 const multer = require('multer')
-var upload = multer({ dest: 'public/' })
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/images')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '_' + file.originalname) //Appending extension
+  }
+})
+
+var upload = multer({ storage: storage });
 
 const {checkTokenMiddleware, decodeToken,isAdminUser } = require('../auth/auth')
 /* GET Burgers listing. */
@@ -40,7 +43,7 @@ router.post('/',[checkTokenMiddleware,isAdminUser,upload.single('burgerImage')],
             title: burger.title,
             description: burger.description,
             price: burger.price,
-            image: "test",
+            image: 'http://localhost:7000/images/' + file.filename,
           }).then((result) => res.json(result));
 });
 // PUT
