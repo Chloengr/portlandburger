@@ -14,9 +14,19 @@ const Burgers = () => {
 =======
   const token = localStorage.getItem('jwt');
 
-  const { mutateAsync } = useMutation((params) =>
-    axios.post("http://localhost:7000/burgers", params, {headers:{'Authorization': 'Bearer ' + token}})
-  );
+  const { mutateAsync } = useMutation((params) =>{
+    const formData = new FormData();
+
+    var imagedata = document.querySelector('input[type="file"]').files[0];
+    formData.append('burgerImage', imagedata)
+    formData.append('title',params.title)
+    formData.append('description',params.description)
+    formData.append('price',params.price)
+
+  console.log(params)
+  
+    axios.post("http://localhost:7000/burgers", formData, {headers:{'Authorization': 'Bearer ' + token,'content-type': 'multipart/form-data'}})
+  });
 
   const user = localStorage.getItem(CURRENT_USER);
   if (!user) {

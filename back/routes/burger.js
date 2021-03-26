@@ -34,21 +34,6 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 // POST
-<<<<<<< HEAD
-router.post(
-  "/",
-  [checkTokenMiddleware, isAdminUser],
-  async function (req, res, next) {
-    const burger = req.body;
-    await db.Burger.create({
-      title: burger.title,
-      description: burger.description,
-      price: burger.price,
-      image: burger.image,
-    }).then((result) => res.json(result));
-  }
-);
-=======
 router.post('/',[checkTokenMiddleware,isAdminUser,upload.single('burgerImage')],async function(req, res, next) {
     const file = req.file
     console.log(file)
@@ -61,7 +46,6 @@ router.post('/',[checkTokenMiddleware,isAdminUser,upload.single('burgerImage')],
             image: "test",
           }).then((result) => res.json(result));
 });
->>>>>>> 3338c29 (upload image dans l'ajout burger)
 // PUT
 router.put(
   "/:id",
