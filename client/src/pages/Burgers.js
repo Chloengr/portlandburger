@@ -82,47 +82,6 @@ const Burgers = () => {
              />
            </>
           )}
-          <Modal
-            title="Ajouter un burger"
-            visible={isModalVisible}
-            onOk={() => setIsModalVisible(false)}
-            onCancel={() => setIsModalVisible(false)}
-          >
-            <Form
-              {...layout}
-              name="basic"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              enctype="multipart/form-data"
-            >
-              <Form.Item
-                label="Intitulé"
-                name="title"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Description" name="description">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Prix" name="price">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Image" name="image">
-                <Input type="file" name="burgerImage" />
-              </Form.Item>
-
-              <Form.Item {...tailLayout}>
-                <Button htmlType="submit">Confirmer</Button>
-              </Form.Item>
-            </Form>
-          </Modal>
         </Row>
 
         <Row gutter={[48, 24]}>
