@@ -1,34 +1,15 @@
+import { Button, Col, Row } from "antd";
+import { useState } from "react";
 import BurgerCard from "../components/BurgerCard/BurgerCard";
 import Header from "../components/Header";
-import { Row, Col, Button, Modal, Form, Input, notification } from "antd";
 import { useApi } from "../contexts/ApiContext";
-import { CURRENT_USER } from "../contexts/AuthContext";
-import { Redirect } from "react-router-dom";
-import { useState } from "react";
-import { useMutation } from "react-query";
-import axios from "axios";
 import { isAdmin } from "../utils/utils";
-import AddModal from "../components/AddModal";
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 12 },
-};
 
-const tailLayout = {
-  wrapperCol: { offset: 10, span: 2 },
-};
+import AddModal from "../components/AddModal";
 
 const Burgers = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   const { burgers } = useApi();
-  const token = localStorage.getItem('jwt');
-
-
-  const user = localStorage.getItem(CURRENT_USER);
-  if (!user) {
-    return <Redirect to="/" />;
-  }
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { isLoading, error, data } = burgers.useGetBurgers();
 
@@ -42,16 +23,16 @@ const Burgers = () => {
         <h1 className="title">Venez découvrir nos burgers !</h1>
         <Row justify="center" align="top" style={{ marginBottom: "2rem" }}>
           {isAdmin && (
-             <>
-             <Button onClick={() => setIsModalVisible(true)} shape="round">
-               Ajouter un burger
-             </Button>
-             <AddModal
-               showModal={isModalVisible}
-               handleCancel={() => setIsModalVisible(false)}
-               handleOk={() => setIsModalVisible(false)}
-             />
-           </>
+            <>
+              <Button onClick={() => setIsModalVisible(true)} shape="round">
+                Ajouter un burger
+              </Button>
+              <AddModal
+                showModal={isModalVisible}
+                handleCancel={() => setIsModalVisible(false)}
+                handleOk={() => setIsModalVisible(false)}
+              />
+            </>
           )}
         </Row>
 
