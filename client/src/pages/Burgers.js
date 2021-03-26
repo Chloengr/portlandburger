@@ -24,19 +24,6 @@ const Burgers = () => {
   const { burgers } = useApi();
   const token = localStorage.getItem('jwt');
 
-  const { mutateAsync } = useMutation((params) =>{
-    const formData = new FormData();
-
-    var imagedata = document.querySelector('input[type="file"]').files[0];
-    formData.append('burgerImage', imagedata)
-    formData.append('title',params.title)
-    formData.append('description',params.description)
-    formData.append('price',params.price)
-
-  console.log(params)
-  
-    axios.post("http://localhost:7000/burgers", formData, {headers:{'Authorization': 'Bearer ' + token,'content-type': 'multipart/form-data'}})
-  });
 
   const user = localStorage.getItem(CURRENT_USER);
   if (!user) {
@@ -47,22 +34,6 @@ const Burgers = () => {
 
   if (isLoading) return "Loading...";
   if (error) return "An error has occurred: " + error.message;
-
-  const onFinish = async (values) => {
-    try {
-      const response = await mutateAsync(values);
-    } catch (e) {
-      notification.open({
-        message: e.message,
-        description: "Échec de l'identification, veuillez réessayer.",
-        type: "error",
-      });
-    }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.error("Failed:", errorInfo);
-  };
 
   return (
     <>

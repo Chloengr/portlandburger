@@ -18,8 +18,14 @@ const AddModal = (props) => {
   const { mutate } = burgers.usePostBurger();
 
   const onFinish = async (values) => {
+    const formData = new FormData();
+    var imagedata = document.querySelector('input[type="file"]').files[0];
+    formData.append('burgerImage', imagedata)
+    formData.append('title',values.title)
+    formData.append('description',values.description)
+    formData.append('price',values.price)
     try {
-      const data = await mutate(values);
+      const data = await mutate(formData);
       setValidForm(true);
     } catch (e) {
       notification.open({
@@ -59,7 +65,7 @@ const AddModal = (props) => {
         </Form.Item>
 
         <Form.Item label="Image" name="image">
-          <Input />
+          <Input type="file" name="burgerImage" />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
