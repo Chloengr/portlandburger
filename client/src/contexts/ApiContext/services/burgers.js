@@ -10,7 +10,7 @@ export const useGetBurgers = () => {
   });
 };
 
-export const usePostBurgers = () => {
+export const usePostBurger = () => {
   return useMutation(
     (payload) => {
       const { data } = callAuthenticatedApi(`http://localhost:7000/burgers`, {
@@ -24,6 +24,24 @@ export const usePostBurgers = () => {
     }
   );
 };
+
+export const usePutBurger = () => {
+  return useMutation(
+    (payload) => {
+      const { data } = callAuthenticatedApi(
+        `http://localhost:7000/burgers/${payload.id}`,
+        {
+          method: "PUT",
+          data: payload.values,
+        }
+      );
+      return data;
+    },
+    {
+      throwOnError: true,
+    }
+  );
+}
 
 export const useRemoveBurger = () => {
   return useMutation(

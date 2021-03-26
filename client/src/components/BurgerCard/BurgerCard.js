@@ -1,9 +1,10 @@
-import { DeleteOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import { useState } from "react";
 import { useApi } from "../../contexts/ApiContext";
 import ConfirmDelete from "../ConfirmDelete";
 
+import EditModal from "../EditModal";
 import "./BurgerCard.scss";
 import { isAdmin } from "../../utils/utils";
 
@@ -11,9 +12,10 @@ const { Meta } = Card;
 
 const BurgerCard = (props) => {
   const { image, title, description, price } = props;
-  const { burgers } = useApi();
-
   const [isModalVisibleDel, setIsModalVisibleDel] = useState(false);
+  const [isEditModal, setEditModal] = useState(false)
+
+  const { burgers } = useApi();
 
   const { mutate } = burgers.useRemoveBurger();
   const handleOk = () => {
@@ -30,6 +32,10 @@ const BurgerCard = (props) => {
       style={{ fontSize: "25px", color: "white" }}
       onClick={() => console.log("Ajouter au paniner")}
     />,
+    <EditOutlined style={{ fontSize: "25px", color: "white" }}
+    onClick={() => {
+      setEditModal(true);
+    }}/>,
     <DeleteOutlined
       style={{ fontSize: "25px", color: "white" }}
       onClick={() => {
@@ -61,6 +67,12 @@ const BurgerCard = (props) => {
         showModal={isModalVisibleDel}
         handleCancel={handleCancel}
         handleOk={handleOk}
+        {...props}
+      />
+      <EditModal
+        showModal={isEditModal}
+        handleCancel={() => setEditModal(false)}
+        handleOk={() => setEditModal(false)}
         {...props}
       />
     </>

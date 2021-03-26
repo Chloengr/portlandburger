@@ -1,46 +1,20 @@
-import { Button, Col, Form, Input, Modal, notification, Row } from "antd";
+import { Button, Col, Row } from "antd";
 import { useState } from "react";
 import BurgerCard from "../components/BurgerCard/BurgerCard";
 import Header from "../components/Header";
 import { useApi } from "../contexts/ApiContext";
 import { isAdmin } from "../utils/utils";
 
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 12 },
-};
-
-const tailLayout = {
-  wrapperCol: { offset: 10, span: 2 },
-};
+import AddModal from "../components/AddModal";
 
 const Burgers = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   const { burgers } = useApi();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { isLoading, error, data } = burgers.useGetBurgers();
 
-  const { mutate } = burgers.usePostBurgers();
-
   if (isLoading) return "Loading...";
   if (error) return "An error has occurred: " + error.message;
-
-  const onFinish = async (values) => {
-    try {
-      const response = await mutate(values);
-    } catch (e) {
-      notification.open({
-        message: e.message,
-        description: "Échec de l'identification, veuillez réessayer.",
-        type: "error",
-      });
-    }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.error("Failed:", errorInfo);
-  };
 
   return (
     <>
@@ -49,50 +23,17 @@ const Burgers = () => {
         <h1 className="title">Venez découvrir nos burgers !</h1>
         <Row justify="center" align="top" style={{ marginBottom: "2rem" }}>
           {isAdmin && (
-            <Button onClick={() => setIsModalVisible(true)} shape="round">
-              Ajouter un burger
-            </Button>
+            <>
+              <Button onClick={() => setIsModalVisible(true)} shape="round">
+                Ajouter un burger
+              </Button>
+              <AddModal
+                showModal={isModalVisible}
+                handleCancel={() => setIsModalVisible(false)}
+                handleOk={() => setIsModalVisible(false)}
+              />
+            </>
           )}
-          <Modal
-            title="Ajouter un burger"
-            visible={isModalVisible}
-            onOk={() => setIsModalVisible(false)}
-            onCancel={() => setIsModalVisible(false)}
-          >
-            <Form
-              {...layout}
-              name="basic"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-            >
-              <Form.Item
-                label="Intitulé"
-                name="title"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Description" name="description">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Prix" name="price">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Image" name="image">
-                <Input />
-              </Form.Item>
-
-              <Form.Item {...tailLayout}>
-                <Button htmlType="submit">Confirmer</Button>
-              </Form.Item>
-            </Form>
-          </Modal>
         </Row>
 
         <Row gutter={[48, 24]}>
