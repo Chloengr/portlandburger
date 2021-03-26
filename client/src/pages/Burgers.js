@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
 import { isAdmin } from "../utils/utils";
-
+import AddModal from "../components/AddModal";
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 12 },
@@ -71,9 +71,16 @@ const Burgers = () => {
         <h1 className="title">Venez découvrir nos burgers !</h1>
         <Row justify="center" align="top" style={{ marginBottom: "2rem" }}>
           {isAdmin && (
-            <Button onClick={() => setIsModalVisible(true)} shape="round">
-              Ajouter un burger
-            </Button>
+             <>
+             <Button onClick={() => setIsModalVisible(true)} shape="round">
+               Ajouter un burger
+             </Button>
+             <AddModal
+               showModal={isModalVisible}
+               handleCancel={() => setIsModalVisible(false)}
+               handleOk={() => setIsModalVisible(false)}
+             />
+           </>
           )}
           <Modal
             title="Ajouter un burger"
