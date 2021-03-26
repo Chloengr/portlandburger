@@ -9,7 +9,20 @@ import AddModal from "../components/AddModal";
 
 const Burgers = () => {
   const { burgers } = useApi();
+<<<<<<< HEAD
   const [isModalVisible, setIsModalVisible] = useState(false);
+=======
+  const token = localStorage.getItem('jwt');
+
+  const { mutateAsync } = useMutation((params) =>
+    axios.post("http://localhost:7000/burgers", params, {headers:{'Authorization': 'Bearer ' + token}})
+  );
+
+  const user = localStorage.getItem(CURRENT_USER);
+  if (!user) {
+    return <Redirect to="/" />;
+  }
+>>>>>>> 3338c29 (upload image dans l'ajout burger)
 
   const { isLoading, error, data } = burgers.useGetBurgers();
 
@@ -34,6 +47,50 @@ const Burgers = () => {
               />
             </>
           )}
+<<<<<<< HEAD
+=======
+          <Modal
+            title="Ajouter un burger"
+            visible={isModalVisible}
+            onOk={() => setIsModalVisible(false)}
+            onCancel={() => setIsModalVisible(false)}
+          >
+            <Form
+              {...layout}
+              name="basic"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              enctype="multipart/form-data"
+            >
+              <Form.Item
+                label="Intitulé"
+                name="title"
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item label="Description" name="description">
+                <Input />
+              </Form.Item>
+
+              <Form.Item label="Prix" name="price">
+                <Input />
+              </Form.Item>
+
+              <Form.Item label="Image" name="image">
+                <Input type="file" name="burgerImage" />
+              </Form.Item>
+
+              <Form.Item {...tailLayout}>
+                <Button htmlType="submit">Confirmer</Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+>>>>>>> 3338c29 (upload image dans l'ajout burger)
         </Row>
 
         <Row gutter={[48, 24]}>

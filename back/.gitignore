@@ -117,3 +117,5 @@ dist
 
 # Ds store osx
 .DS_Store
+
+public/images
