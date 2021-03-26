@@ -79,7 +79,9 @@ router.post("/burger", async function (req, res, next) {
         qte: panier.qte || 1,
       }).then((result) => res.json(result));
     } else {
-      res.json({ message: "Error. Item Burger is already in panier" });
+      panierBurgerDb.qte += panier.qte || 1;
+      await panierBurgerDb.save();
+      res.json(panierBurgerDb);
     }
   } else {
     res.sendStatus(404);
