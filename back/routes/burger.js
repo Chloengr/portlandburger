@@ -1,7 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const db = require("../models");
-const multer = require('multer')
+const multer = require('multer');
+const fs = require('fs');
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/images')
@@ -75,6 +76,14 @@ router.delete(
     const burgerDb = await db.Burger.findOne({ where: { id: burgerID } });
     if (burgerDb) {
       await burgerDb.destroy();
+      const fileurl = burgerDb.image;
+      var index = fileurl.lastIndexOf("/");
+      var fileName = fileurl.substr(index);
+      console.log(fileName);
+      fs.unlink('./public/images/' + fileName, (err) => {
+        if (err) throw err;
+        console.log('successfully deleted ./public/images/' + fileName);
+      });
       res.sendStatus(200);
     } else {
       res.status(404).json({ message: "Error. Incorrect Burger Id" });
