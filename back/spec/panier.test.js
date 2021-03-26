@@ -6,9 +6,6 @@ const cleanDb = require('./helpers/cleanDb')
 
 
 
-
-
-
 beforeAll(async() => {
     await cleanDb(db)
 });
@@ -37,7 +34,7 @@ describe('get paniers', () => {
         const access_token = responsePost.body.access_token;
         responsePaniers = await request(app).get('/paniers/').set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
         responsePostPanier = await request(app).post('/paniers/').set('Content-Type', 'application/json').set('Authorization', `Bearer ${access_token}`).send(panier).catch((e) => console.log(e))
-        responsePaniersUsername = await request(app).get(`/paniers/username/${account.username}`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        responsePaniersUsername = await request(app).get(`/paniers/username/${account.username}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
 
         
     })

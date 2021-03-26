@@ -22,9 +22,11 @@ router.get('/username/:username', async function (req, res, next) {
     if (panierDb) {
         const panierBurger = await db.Panier_Burger.findAll({ where: { PanierId: panierDb.id } });
         let total = 0;
-        console.log(panierBurger)
-
+        
         if (panierBurger) {
+            if (panierBurger.length === 0) {
+                res.json({ panier: panierBurger, total: total });
+            }
             panierBurger.forEach(async (element, index) => {
                 const burger = await getBurger(element.BurgerId);
                 total += element.qte * burger.price;
@@ -32,6 +34,7 @@ router.get('/username/:username', async function (req, res, next) {
                     res.json({ panier: panierBurger, total: total });
                 }
             });
+            
         }
         else {
             res.json({ panier: panierBurger, total: total });
@@ -48,9 +51,11 @@ router.get('/:userId', async function (req, res, next) {
     if (panierDb) {
         const panierBurger = await db.Panier_Burger.findAll({ where: { PanierId: panierDb.id } });
         let total = 0;
-        console.log(panierBurger)
 
         if (panierBurger) {
+            if (panierBurger.length === 0) {
+                res.json({ panier: panierBurger, total: total });
+            }
             panierBurger.forEach(async (element, index) => {
                 const burger = await getBurger(element.BurgerId);
                 total += element.qte * burger.price;
