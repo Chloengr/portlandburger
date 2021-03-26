@@ -11,7 +11,7 @@ const factory = require('factory-girl').factory
 
 
 beforeAll(async() => {
-    await cleanDb(db)
+    //await cleanDb(db)
 });
 
 afterAll(async() => {
@@ -45,13 +45,13 @@ describe('get burgers', () => {
         responsePost = await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
         const access_token = responsePost.body.access_token;
         responseBurgers = await request(app).get('/burgers').set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
-        responsePostBurger = await request(app).post('/burgers/').set('Content-Type', 'application/json').send(burger).catch((e) => console.log(e));  
+        responsePostBurger = await request(app).post('/burgers/').set('Authorization', `Bearer ${access_token}`).set('Content-Type', 'application/json').send(burger).catch((e) => console.log(e));  
         burgerPost = await db.Burger.findOne({ where: {id: responsePostBurger.body.id}});
 
         //burgerUpdate = await db.Burger.findOne({ where: {id: responsePostBurger.body.id}});
         //burgerUpdate.title = "titre modifié";
         
-        responsePutBurger = await request(app).put(`/burgers/${burgerPost.id}`).set('Content-Type', 'application/json').send(burger2).catch((e) => console.log(e));
+        responsePutBurger = await request(app).put(`/burgers/${burgerPost.id}`).set('Authorization', `Bearer ${access_token}`).set('Content-Type', 'application/json').send(burger2).catch((e) => console.log(e));
 
         responseDeleteBurgers = await request(app).delete(`/burgers/${burgerPost.id}`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
 

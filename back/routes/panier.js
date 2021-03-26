@@ -13,6 +13,7 @@ router.get("/", async function (req, res, next) {
 });
 
 /* GET Panier of UserID listing. */
+
 router.get("/:userId", async function (req, res, next) {
   const userId = req.params.userId;
   const panierDb = await db.Panier.findOne({ where: { UserId: userId } });
@@ -37,6 +38,7 @@ router.get("/:userId", async function (req, res, next) {
 
   return res.json({ panier: panierBurger, total: total });
 });
+
 
 /* POST Create Panier of User listing. */
 router.post("/", async function (req, res, next) {
