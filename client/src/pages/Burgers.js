@@ -1,12 +1,8 @@
+import { Button, Col, Form, Input, Modal, notification, Row } from "antd";
+import { useState } from "react";
 import BurgerCard from "../components/BurgerCard/BurgerCard";
 import Header from "../components/Header";
-import { Row, Col, Button, Modal, Form, Input, notification } from "antd";
 import { useApi } from "../contexts/ApiContext";
-import { CURRENT_USER } from "../contexts/AuthContext";
-import { Redirect } from "react-router-dom";
-import { useState } from "react";
-import { useMutation } from "react-query";
-import axios from "axios";
 import { isAdmin } from "../utils/utils";
 
 const layout = {
@@ -22,11 +18,6 @@ const Burgers = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { burgers } = useApi();
-
-  const user = localStorage.getItem(CURRENT_USER);
-  if (!user) {
-    return <Redirect to="/" />;
-  }
 
   const { isLoading, error, data } = burgers.useGetBurgers();
 

@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import { Table, Space, Button } from "antd";
 import { useApi } from "../contexts/ApiContext";
-import { CURRENT_USER } from "../contexts/AuthContext";
+import { userId } from "../utils/utils";
 
 const ShoppingCart = () => {
   const columns = [
@@ -33,7 +33,6 @@ const ShoppingCart = () => {
   ];
 
   const { carts } = useApi();
-  const userId = localStorage.getItem(CURRENT_USER);
 
   const { isLoading, error, data } = carts.useGetUserPanier(userId);
 
