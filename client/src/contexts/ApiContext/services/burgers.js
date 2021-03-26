@@ -10,6 +10,21 @@ export const useGetBurgers = () => {
   });
 };
 
+export const usePostBurgers = () => {
+  return useMutation(
+    (payload) => {
+      const { data } = callAuthenticatedApi(`http://localhost:7000/burgers`, {
+        method: "POST",
+        data: payload,
+      });
+      return data;
+    },
+    {
+      throwOnError: true,
+    }
+  );
+};
+
 export const useRemoveBurger = () => {
   return useMutation(
     (id) => {
