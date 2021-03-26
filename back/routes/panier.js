@@ -64,7 +64,7 @@ router.post("/", async function (req, res, next) {
 /* POST Add Burger in Panier of User listing. */
 router.post("/burger", async function (req, res, next) {
   const panier = req.body;
-
+  
   const panierDb = await db.Panier.findOne({
     where: { UserId: panier.UserId },
   });

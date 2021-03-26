@@ -11,7 +11,7 @@ const factory = require('factory-girl').factory
 
 
 beforeAll(async() => {
-    //await cleanDb(db)
+    //await cleanDb(db, 'burger');
 });
 
 afterAll(async() => {
@@ -63,7 +63,7 @@ describe('get burgers', () => {
 
         expect(responseBurgers.statusCode).toBe(200);
 
-        expect(responseBurgers.body.length).toBe(20);
+        expect(responseBurgers.body.length).toBe(40);
 
         expect(responsePostBurger.statusCode).toBe(200);
 
