@@ -23,10 +23,6 @@ const Burgers = () => {
 
   const { burgers } = useApi();
 
-  const { mutateAsync } = useMutation((params) =>
-    axios.post("http://localhost:7000/burgers", params)
-  );
-
   const user = localStorage.getItem(CURRENT_USER);
   if (!user) {
     return <Redirect to="/" />;
@@ -34,12 +30,14 @@ const Burgers = () => {
 
   const { isLoading, error, data } = burgers.useGetBurgers();
 
+  const { mutate } = burgers.usePostBurgers();
+
   if (isLoading) return "Loading...";
   if (error) return "An error has occurred: " + error.message;
 
   const onFinish = async (values) => {
     try {
-      const response = await mutateAsync(values);
+      const response = await mutate(values);
     } catch (e) {
       notification.open({
         message: e.message,
