@@ -1,5 +1,4 @@
 import { message, notification } from "antd";
-import { isError } from "react-query";
 
 export const stringToBoolean = (string) => {
   switch (string) {

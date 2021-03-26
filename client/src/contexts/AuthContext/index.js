@@ -26,6 +26,28 @@ export const AuthProvider = (props) => {
     isLoggedIn: true,
   });
 
+  const { mutate } = useMutation((params) =>
+    axios.post(`${URL}/users/users/register`, params)
+  );
+
+  const register = async (payload) => {
+    try {
+      const response = await mutate({...payload, role: 'USER'});
+      console.log('register response', response);
+
+      localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
+
+      setUser(response.data)
+
+    } catch (e) {
+      notification.open({
+        message: e.message,
+        description: "Échec de l'inscription, veuillez réessayer.",
+        type: "error",
+      });
+    }
+  };
+
   const { mutateAsync } = useMutation((params) =>
     axios.post(`${URL}/users/login`, params)
   );
@@ -49,7 +71,7 @@ export const AuthProvider = (props) => {
   const login = async (payload) => {
     try {
       const response = await mutateAsync(payload);
-
+      console.log('login response', response);
       localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
 
       const jwt = jwtDecode(response.data.access_token);
@@ -76,6 +98,6 @@ export const AuthProvider = (props) => {
     });
   };
 
-  return <AuthContext.Provider value={{ user, login, logout }} {...props} />;
+  return <AuthContext.Provider value={{ user,register, login, logout }} {...props} />;
 };
 export const useAuth = () => React.useContext(AuthContext);
