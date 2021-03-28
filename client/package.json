@@ -43,5 +43,9 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "@cypress/react": "^4.16.4",
+        "cypress": "^6.8.0"
     }
 }
