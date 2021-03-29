@@ -1,12 +1,16 @@
-import { ShoppingCartOutlined } from "@ant-design/icons";
-import { PageHeader, Button } from "antd";
-import { Link, useHistory } from "react-router-dom";
-import { isAdmin, userId } from "../utils/utils";
+import {
+  FireOutlined,
+  LogoutOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
+import { Button, PageHeader } from "antd";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const Header = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   let history = useHistory();
+  let location = useLocation();
 
   const redirectHome = () => {
     history.push("/");
@@ -28,24 +32,29 @@ const Header = () => {
         }}
         extra={[
           <>
-            {!isAdmin && (
+            {location.pathname !== "/burgers" && (
+              <Link to="/burgers">
+                <Button shape="round" icon={<FireOutlined />}>
+                  Burgers
+                </Button>
+              </Link>
+            )}
+          </>,
+          <>
+            {!user.isAdmin && location.pathname !== "/cart" && (
               <Link to="/cart">
-                <Button
-                  type="primary"
-                  shape="round"
-                  icon={<ShoppingCartOutlined />}
-                >
+                <Button shape="round" icon={<ShoppingCartOutlined />}>
                   Panier
                 </Button>
               </Link>
             )}
           </>,
           <>
-            {userId && (
+            {user.isLoggedIn && location.pathname !== "/cart" && (
               <Button
                 type="primary"
                 shape="round"
-                icon={<ShoppingCartOutlined />}
+                icon={<LogoutOutlined />}
                 onClick={() => {
                   logout();
                   redirectHome();

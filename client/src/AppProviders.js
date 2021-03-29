@@ -1,8 +1,8 @@
-import { ApiProvider } from "../src/contexts/ApiContext";
-import { AuthProvider } from "../src/contexts/AuthContext";
 import { LocationProvider } from "@reach/router";
 import React from "react";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ApiProvider } from "../src/contexts/ApiContext";
+import { AuthProvider } from "../src/contexts/AuthContext";
 
 const queryClient = new QueryClient();
 

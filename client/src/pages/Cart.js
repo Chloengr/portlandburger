@@ -1,7 +1,8 @@
+import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Space, Table } from "antd";
 import Header from "../components/Header";
-import { Table, Space, Button } from "antd";
 import { useApi } from "../contexts/ApiContext";
-import { userId } from "../utils/utils";
+import { useAuth } from "../contexts/AuthContext";
 
 const ShoppingCart = () => {
   const columns = [
@@ -9,7 +10,6 @@ const ShoppingCart = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
     },
     {
       title: "Quantité",
@@ -20,28 +20,44 @@ const ShoppingCart = () => {
       title: "Prix",
       dataIndex: "price",
       key: "price",
+      render: (text) => <a>{text} €</a>,
     },
     {
       title: "Action",
       key: "action",
-      render: (text, record) => (
+      render: (rowKey) => (
         <Space size="middle">
-          <a>Delete</a>
+          <Button
+            type="danger"
+            shape="circle"
+            icon={<DeleteOutlined />}
+            onClick={() => deleteBurger(rowKey.burgerId)}
+          />
         </Space>
       ),
     },
   ];
 
   const { carts } = useApi();
+  const { user } = useAuth();
 
-  const { isLoading, error, data } = carts.useGetUserPanier(userId);
+  const { isLoading, error, data } = carts.useGetUserPanier(user.id);
+  const { mutate } = carts.useDeleteBurgersInCart();
+
+  const deleteBurger = (burgerId) => {
+    mutate({
+      PanierId: data.panier[0].PanierId,
+      BurgerId: burgerId,
+    });
+  };
 
   if (isLoading) return "Loading...";
   if (error) return "An error has occurred: " + error.message;
 
   const formatData = (data) => {
-    return data.map((el) => {
+    return data?.map((el) => {
       return {
+        burgerId: el.Burger.id,
         name: el.Burger.title,
         quantity: el.qte,
         price: el.Burger.price,
@@ -54,10 +70,18 @@ const ShoppingCart = () => {
       <Header />
       <div className="container">
         <h1>Récapitulatif de votre commande</h1>
-        <Table columns={columns} dataSource={formatData(data.panier)} />
-        <h2>Total {data.total ? data.total : "ça marche pô"}</h2>
-        <Button>Annuler</Button>
-        <Button>Payer</Button>
+        <Table
+          columns={columns}
+          dataSource={formatData(data?.panier)}
+          rowKey={(obj) => obj.burgerId}
+        />
+        <h2>Total {data?.total} €</h2>
+        <Button shape="round" style={{ marginRight: "2%" }}>
+          Annuler
+        </Button>
+        <Button shape="round" type="primary">
+          Payer
+        </Button>
       </div>
     </>
   );

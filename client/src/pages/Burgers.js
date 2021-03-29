@@ -1,13 +1,13 @@
 import { Button, Col, Row } from "antd";
 import { useState } from "react";
+import AddModal from "../components/AddModal";
 import BurgerCard from "../components/BurgerCard/BurgerCard";
 import Header from "../components/Header";
 import { useApi } from "../contexts/ApiContext";
-import { isAdmin } from "../utils/utils";
-
-import AddModal from "../components/AddModal";
+import { useAuth } from "../contexts/AuthContext";
 
 const Burgers = () => {
+  const { user } = useAuth();
   const { burgers } = useApi();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -22,7 +22,7 @@ const Burgers = () => {
       <div className="container">
         <h1 className="title">Venez découvrir nos burgers !</h1>
         <Row justify="center" align="top" style={{ marginBottom: "2rem" }}>
-          {isAdmin && (
+          {user.isAdmin && (
             <>
               <Button onClick={() => setIsModalVisible(true)} shape="round">
                 Ajouter un burger

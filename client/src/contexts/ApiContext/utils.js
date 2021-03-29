@@ -2,6 +2,8 @@
 import { JWT_LOCALSTORAGE_KEY } from "../AuthContext/index";
 import axios from "axios";
 
+export const URL = "http://localhost:7000";
+
 export const callApi = async (url, config) => {
   return await axios
     .request({

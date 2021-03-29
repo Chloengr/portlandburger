@@ -1,56 +1,64 @@
 import { notification } from "antd";
-import React, { useState } from "react";
-import { useMutation } from "react-query";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { useMutation } from "react-query";
+import { URL } from "../ApiContext/utils";
 
 const AuthContext = React.createContext({
   login: async () => {},
   logout: async () => {},
+
   user: {
-    user: null,
-    isLoggedIn: false,
+    id: null,
+    username: null,
     isAdmin: false,
-    isUser: false,
+    isLoggedIn: true,
   },
 });
 export const JWT_LOCALSTORAGE_KEY = "jwt";
-export const CURRENT_USER = "user";
-export const IS_ADMIN = "isAdmin";
-
 export const AuthProvider = (props) => {
   const [user, setUser] = useState({
-    user: null,
-    isLoggedIn: false,
+    id: null,
+    username: null,
     isAdmin: false,
+    isLoggedIn: true,
   });
 
   const { mutateAsync } = useMutation((params) =>
-    axios.post("http://localhost:7000/users/login", params)
+    axios.post(`${URL}/users/login`, params)
   );
+
+  useEffect(() => {
+    const token = localStorage.getItem(JWT_LOCALSTORAGE_KEY);
+
+    // Verifier si c'est expiré
+
+    if (token) {
+      const jwt = jwtDecode(token);
+      setUser({
+        id: jwt.id,
+        username: jwt.username,
+        isAdmin: jwt.isAdmin,
+        isLoggedIn: true,
+      });
+    }
+  }, []);
 
   const login = async (payload) => {
     try {
       const response = await mutateAsync(payload);
 
       localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
-      localStorage.setItem(CURRENT_USER, response.data.id);
-      localStorage.setItem(IS_ADMIN, response.data.role === "ADMIN");
 
-      // TODO
+      const jwt = jwtDecode(response.data.access_token);
 
-      // const jwt = jwtDecode(response.data.access_token);
-
-      // console.log(jwt);
-
-      // setUser({
-      //   user: {
-      //     username: response.data.username,
-      //     role: response.data.role,
-      //   },
-      //   isLoggedIn: true,
-      //   isAdmin: response.data.role !== "admin",
-      // });
+      setUser({
+        id: jwt.id,
+        username: jwt.username,
+        isAdmin: jwt.isAdmin,
+        isLoggedIn: true,
+      });
     } catch (e) {
       notification.open({
         message: e.message,
@@ -62,14 +70,13 @@ export const AuthProvider = (props) => {
 
   const logout = () => {
     localStorage.removeItem(JWT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_USER);
-    localStorage.removeItem(IS_ADMIN);
 
-    // setUser({
-    //   user: null,
-    //   isLoggedIn: false,
-    //   isAdmin: false,
-    // });
+    setUser({
+      id: null,
+      username: null,
+      isAdmin: false,
+      isLoggedIn: true,
+    });
   };
 
   return <AuthContext.Provider value={{ user, login, logout }} {...props} />;

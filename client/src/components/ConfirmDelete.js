@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Button } from "antd";
-import { useApi } from "../contexts/ApiContext";
+import { Modal } from "antd";
+import React from "react";
 
 const ConfimDelete = (props) => {
   return (
