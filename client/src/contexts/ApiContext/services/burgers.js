@@ -1,19 +1,19 @@
-import { useMutation, useQuery } from "react-query";
-import { callAuthenticatedApi } from "../utils";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { callAuthenticatedApi, URL } from "../utils";
 
 export const useGetBurgers = () => {
   return useQuery("burgers", async () => {
-    const { data } = await callAuthenticatedApi(
-      `http://localhost:7000/burgers`
-    );
+    const { data } = await callAuthenticatedApi(`${URL}/burgers`);
     return data;
   });
 };
 
 export const usePostBurger = () => {
+  const queryClient = useQueryClient();
+
   return useMutation(
     (payload) => {
-      const { data } = callAuthenticatedApi(`http://localhost:7000/burgers`, {
+      const { data } = callAuthenticatedApi(`${URL}/burgers`, {
         method: "POST",
         headers:'multipart/form-data',
         data: payload,
@@ -21,42 +21,45 @@ export const usePostBurger = () => {
       return data;
     },
     {
-      throwOnError: true,
+      onSettled: () => {
+        queryClient.invalidateQueries("burgers");
+      },
     }
   );
 };
 
 export const usePutBurger = () => {
+  const queryClient = useQueryClient();
+
   return useMutation(
     (payload) => {
-      const { data } = callAuthenticatedApi(
-        `http://localhost:7000/burgers/${payload.id}`,
-        {
-          method: "PUT",
-          data: payload.values,
-        }
-      );
+      const { data } = callAuthenticatedApi(`${URL}/burgers/${payload.id}`, {
+        method: "PUT",
+        data: payload.values,
+      });
       return data;
     },
     {
-      throwOnError: true,
+      onSuccess: () => {
+        queryClient.invalidateQueries("burgers");
+      },
     }
   );
-}
+};
 
 export const useRemoveBurger = () => {
+  const queryClient = useQueryClient();
   return useMutation(
     (id) => {
-      const { data } = callAuthenticatedApi(
-        `http://localhost:7000/burgers/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const { data } = callAuthenticatedApi(`${URL}/burgers/${id}`, {
+        method: "DELETE",
+      });
       return data;
     },
     {
-      throwOnError: true,
+      onSuccess: () => {
+        queryClient.invalidateQueries("burgers");
+      },
     }
   );
 };

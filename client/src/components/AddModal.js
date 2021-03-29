@@ -20,10 +20,10 @@ const AddModal = (props) => {
   const onFinish = async (values) => {
     const formData = new FormData();
     var imagedata = document.querySelector('input[type="file"]').files[0];
-    formData.append('burgerImage', imagedata)
-    formData.append('title',values.title)
-    formData.append('description',values.description)
-    formData.append('price',values.price)
+    formData.append("burgerImage", imagedata);
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("price", values.price);
     try {
       const data = await mutate(formData);
       setValidForm(true);

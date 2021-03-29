@@ -1,8 +1,12 @@
 @import '../../styles/index.scss';
 .price {
-    font-size: 20px;
-    margin-top: 1rem;
     margin-bottom: 0;
+}
+
+.flex {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    margin-top: 2rem;
 }

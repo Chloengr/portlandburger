@@ -1,25 +1,31 @@
-import { DeleteOutlined, EditOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { Card } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
+import { Card, InputNumber, message } from "antd";
 import { useState } from "react";
 import { useApi } from "../../contexts/ApiContext";
+import { useAuth } from "../../contexts/AuthContext";
 import ConfirmDelete from "../ConfirmDelete";
-
 import EditModal from "../EditModal";
 import "./BurgerCard.scss";
-import { isAdmin } from "../../utils/utils";
 
 const { Meta } = Card;
 
 const BurgerCard = (props) => {
-  const { image, title, description, price } = props;
+  const { image, title, description, price, id } = props;
   const [isModalVisibleDel, setIsModalVisibleDel] = useState(false);
-  const [isEditModal, setEditModal] = useState(false)
+  const [isEditModal, setEditModal] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const { burgers } = useApi();
+  const { user } = useAuth();
 
   const { mutate } = burgers.useRemoveBurger();
+
   const handleOk = () => {
-    mutate(props.id);
+    mutate(id);
     setIsModalVisibleDel(false);
   };
 
@@ -28,16 +34,14 @@ const BurgerCard = (props) => {
   };
 
   const actionsAdmin = [
-    <ShoppingCartOutlined
-      style={{ fontSize: "25px", color: "white" }}
-      onClick={() => console.log("Ajouter au paniner")}
+    <EditOutlined
+      style={{ fontSize: "20px", color: "white" }}
+      onClick={() => {
+        setEditModal(true);
+      }}
     />,
-    <EditOutlined style={{ fontSize: "25px", color: "white" }}
-    onClick={() => {
-      setEditModal(true);
-    }}/>,
     <DeleteOutlined
-      style={{ fontSize: "25px", color: "white" }}
+      style={{ fontSize: "20px", color: "white" }}
       onClick={() => {
         setIsModalVisibleDel(true);
       }}
@@ -46,22 +50,47 @@ const BurgerCard = (props) => {
 
   const actionsUser = [
     <ShoppingCartOutlined
-      style={{ fontSize: "25px", color: "white" }}
-      onClick={() => console.log("Ajouter au paniner")}
+      style={{ fontSize: "20px", color: "white" }}
+      onClick={() => addBurgerinCart()}
     />,
   ];
+
+  const chooseQuantity = (qte) => {
+    setQuantity(qte);
+  };
+
+  const { carts } = useApi();
+  const { mutateAsync, isSuccess, isError } = carts.useAddBurgerInCart();
+  const { data } = carts.useGetUserPanier(user.id);
+
+  const addBurgerinCart = () => {
+    mutateAsync({
+      BurgerId: id,
+      PanierId: data?.panier[0].id,
+      UserId: user.id,
+      qte: quantity,
+    });
+  };
 
   return (
     <>
       <Card
         style={{ width: 300 }}
-        cover={<img alt="image burger" src={image} />}
-        actions={isAdmin ? actionsAdmin : actionsUser}
+        cover={<img alt="burger" src={image} />}
+        actions={user.isAdmin ? actionsAdmin : actionsUser}
       >
         <Meta title={title} description={description} />
-        <p className="price">
-          <span>{price} € </span>
-        </p>
+        <div className="flex">
+          <InputNumber
+            min={1}
+            max={10}
+            defaultValue={1}
+            onChange={(qte) => chooseQuantity(qte)}
+          />
+          <p className="price">
+            <span>{price} € </span>
+          </p>
+        </div>
       </Card>
       <ConfirmDelete
         showModal={isModalVisibleDel}

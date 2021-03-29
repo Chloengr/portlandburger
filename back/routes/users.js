@@ -21,7 +21,7 @@ router.post("/login", async function (req, res, next) {
     return res.status(400).json({ message: "Error. Wrong login or password" });
   }
 
-  const token = auth.generateAccessToken(req.body.username);
+  const token = auth.generateAccessToken(user.username, user.id, user.role);
 
   return res.json({
     access_token: token,

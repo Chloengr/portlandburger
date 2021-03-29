@@ -16,10 +16,17 @@ router.get("/", async function (req, res, next) {
 
 router.get("/:userId", async function (req, res, next) {
   const userId = req.params.userId;
+
+  if (!userId) {
+    return res.sendStatus(400).json({ message: "Bad request." });
+  }
+
   const panierDb = await db.Panier.findOne({ where: { UserId: userId } });
 
   if (!panierDb) {
-    return res.sendStatus(404);
+    return res
+      .sendStatus(404)
+      .json({ message: "Cet utilisateur n'a pas de panier." });
   }
 
   const panierBurger = await db.Panier_Burger.findAll({
@@ -31,6 +38,8 @@ router.get("/:userId", async function (req, res, next) {
     return res.json({ panier: [], total: 0 });
   }
 
+  console.log(panierBurger);
+
   const reducer = (total, element) =>
     total + element.qte * element.Burger.price;
 
@@ -38,7 +47,6 @@ router.get("/:userId", async function (req, res, next) {
 
   return res.json({ panier: panierBurger, total: total });
 });
-
 
 /* POST Create Panier of User listing. */
 router.post("/", async function (req, res, next) {
@@ -125,9 +133,5 @@ router.put("/burger/remove", async function (req, res, next) {
     res.sendStatus(404);
   }
 });
-
-async function getBurger(id) {
-  return await db.Burger.findOne({ where: { id: id } });
-}
 
 module.exports = router;

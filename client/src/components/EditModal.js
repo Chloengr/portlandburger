@@ -19,8 +19,8 @@ const EditModal = (props) => {
 
   const onFinish = async (values) => {
     try {
-      const result = {id: props.id, values: values}
-      const data = await mutateAsync(result);
+      const result = { id: props.id, values: values };
+      await mutateAsync(result);
       setValidForm(true);
     } catch (e) {
       notification.open({
