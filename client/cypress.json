@@ -1,0 +1,9 @@
+{
+  "fixturesFolder": false,
+  "testFiles": "**/*.spec.js",  
+  "nodeVersion":"system",
+  "experimentalComponentTesting": true,
+  "experimentalFetchPolyfill": true,
+  "baseUrl": "http://localhost:3000/",
+  "componentFolder": "cypress/component"
+}
