@@ -1,4 +1,4 @@
-import { Button, Col, Row } from "antd";
+import { Button, Col, Result, Row } from "antd";
 import { useState } from "react";
 import AddModal from "../components/AddModal";
 import BurgerCard from "../components/BurgerCard/BurgerCard";

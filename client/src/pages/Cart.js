@@ -1,4 +1,4 @@
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EuroOutlined } from "@ant-design/icons";
 import { Button, Space, Table } from "antd";
 import Header from "../components/Header";
 import { useApi } from "../contexts/ApiContext";
@@ -46,7 +46,7 @@ const ShoppingCart = () => {
 
   const deleteBurger = (burgerId) => {
     mutate({
-      PanierId: data.panier[0].PanierId,
+      PanierId: data.panierId,
       BurgerId: burgerId,
     });
   };
@@ -69,18 +69,20 @@ const ShoppingCart = () => {
     <>
       <Header />
       <div className="container">
-        <h1>Récapitulatif de votre commande</h1>
+        <h1 style={{ marginTop: "4rem" }}>Récapitulatif de votre commande</h1>
         <Table
           columns={columns}
           dataSource={formatData(data?.panier)}
           rowKey={(obj) => obj.burgerId}
         />
         <h2>Total {data?.total} €</h2>
-        <Button shape="round" style={{ marginRight: "2%" }}>
-          Annuler
-        </Button>
-        <Button shape="round" type="primary">
-          Payer
+        <Button
+          type="primary"
+          shape="round"
+          size="large"
+          icon={<EuroOutlined />}
+        >
+          Je veux commander
         </Button>
       </div>
     </>

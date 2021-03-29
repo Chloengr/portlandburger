@@ -16,17 +16,19 @@ router.get("/", async function (req, res, next) {
 
 router.get("/:userId", async function (req, res, next) {
   const userId = req.params.userId;
+  let panierDb;
 
   if (!userId) {
     return res.sendStatus(400).json({ message: "Bad request." });
   }
 
-  const panierDb = await db.Panier.findOne({ where: { UserId: userId } });
+  panierDb = await db.Panier.findOne({ where: { UserId: userId } });
 
   if (!panierDb) {
-    return res
-      .sendStatus(404)
-      .json({ message: "Cet utilisateur n'a pas de panier." });
+    await db.Panier.create({
+      UserId: userId,
+      date: new Date(),
+    }).then((result) => (panierDb = result));
   }
 
   const panierBurger = await db.Panier_Burger.findAll({
@@ -35,7 +37,7 @@ router.get("/:userId", async function (req, res, next) {
   });
 
   if (!panierBurger || panierBurger.length === 0) {
-    return res.json({ panier: [], total: 0 });
+    return res.json({ panierId: panierDb.id, panier: [], total: 0 });
   }
 
   console.log(panierBurger);
@@ -45,7 +47,11 @@ router.get("/:userId", async function (req, res, next) {
 
   const total = panierBurger.reduce(reducer, 0);
 
-  return res.json({ panier: panierBurger, total: total });
+  return res.json({
+    panierId: panierDb.id,
+    panier: panierBurger,
+    total: total,
+  });
 });
 
 /* POST Create Panier of User listing. */
@@ -72,7 +78,7 @@ router.post("/", async function (req, res, next) {
 /* POST Add Burger in Panier of User listing. */
 router.post("/burger", async function (req, res, next) {
   const panier = req.body;
-  
+
   const panierDb = await db.Panier.findOne({
     where: { UserId: panier.UserId },
   });
@@ -87,7 +93,7 @@ router.post("/burger", async function (req, res, next) {
         qte: panier.qte || 1,
       }).then((result) => res.json(result));
     } else {
-      panierBurgerDb.qte += panier.qte || 1;
+      panierBurgerDb.qte += panier.qte || 1;
       await panierBurgerDb.save();
       res.json(panierBurgerDb);
     }

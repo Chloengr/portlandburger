@@ -64,9 +64,10 @@ const BurgerCard = (props) => {
   const { data } = carts.useGetUserPanier(user.id);
 
   const addBurgerinCart = () => {
+    console.log("data", data);
     mutateAsync({
       BurgerId: id,
-      PanierId: data?.panier[0].id,
+      PanierId: data?.panierId.id,
       UserId: user.id,
       qte: quantity,
     });
