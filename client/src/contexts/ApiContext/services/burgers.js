@@ -15,7 +15,10 @@ export const usePostBurger = () => {
     (payload) => {
       const { data } = callAuthenticatedApi(`${URL}/burgers`, {
         method: "POST",
-        headers:'multipart/form-data',
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/ld+json",
+        },
         data: payload,
       });
       return data;

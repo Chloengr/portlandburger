@@ -1,38 +1,34 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Input, notification } from "antd";
+import { Modal, Button, Form, Input, notification, message } from "antd";
 import { LikeOutlined } from "@ant-design/icons";
 import { useApi } from "../contexts/ApiContext";
-
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 12 },
-};
-
-const tailLayout = {
-  wrapperCol: { offset: 10, span: 2 },
-};
+import {
+  layout,
+  notificationError,
+  returnUiMessage,
+  tailLayout,
+} from "../utils/utils";
 
 const EditModal = (props) => {
-  const [isValid, setValidForm] = useState(false);
   const { burgers } = useApi();
-  const { mutateAsync } = burgers.usePutBurger();
 
-  const onFinish = async (values) => {
+  const [isValid, setValidForm] = useState(false);
+
+  const { mutate, status, error } = burgers.usePutBurger();
+
+  const onFinish = (values) => {
     try {
       const result = { id: props.id, values: values };
-      await mutateAsync(result);
+      mutate(result);
       setValidForm(true);
     } catch (e) {
-      notification.open({
-        message: e.message,
-        description: "Échec, veuillez réessayer.",
-        type: "error",
-      });
+      notificationError(e);
     }
+    returnUiMessage(status, error, "Burger modifié 🍔");
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.error("Failed:", errorInfo);
+    message.error(`Il y a eu une erreur ${errorInfo}`);
   };
   return (
     <>
