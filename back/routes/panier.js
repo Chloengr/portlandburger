@@ -40,7 +40,6 @@ router.get("/:userId", async function (req, res, next) {
     return res.json({ panierId: panierDb.id, panier: [], total: 0 });
   }
 
-  console.log(panierBurger);
 
   const reducer = (total, element) =>
     total + element.qte * element.Burger.price;

@@ -7,18 +7,18 @@ require('./factories/burger').factory
 const factory = require('factory-girl').factory
 
 
-beforeAll(async() => {
+beforeAll(async () => {
     await cleanDb(db);
 });
 
-afterAll(async() => {
+afterAll(async () => {
     //await cleanDb(db)
     // await db.close()
 });
 
 function getRandomArbitrary(max) {
     return Math.floor(Math.random() * max);
-  }
+}
 
 describe('get paniers', () => {
 
@@ -27,20 +27,20 @@ describe('get paniers', () => {
         "password": "user"
     };
     const panier = {
-       "UserId": 1, 
+        "UserId": 1,
     };
 
-const burger1 = {
-    "UserId": 1,
-    "BurgerId": 1,
-    "qte": 3
-}
-const burger2 = {
-    "UserId": 1,
-    "BurgerId": 1
-} 
+    const burger1 = {
+        "UserId": 1,
+        "BurgerId": 1,
+        "qte": 3
+    }
+    const burger2 = {
+        "UserId": 1,
+        "BurgerId": 1
+    }
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         paniers = await factory.createMany('Burgers', 20)
 
         responsePost = await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
@@ -61,7 +61,7 @@ const burger2 = {
         responsePaniersUsersFull = await request(app).get(`/paniers/${panier.UserId}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
     })
 
-    test('Burger CRUD Response', async() => {
+    test('Burger CRUD Response', async () => {
         expect(responsePost.statusCode).toBe(200);
 
         expect(responsePaniers.statusCode).toBe(200);
@@ -84,6 +84,6 @@ const burger2 = {
         expect(responsePaniersUsersFull.body.total > 0).toBe(true);
 
 
-        
+
     });
 });

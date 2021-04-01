@@ -28,14 +28,12 @@ describe('get burgers', () => {
     const burger = {
         "title": "BurgerMomo",
         "description": "c bon",
-        "price": 200.99,
-        "image": "beau burger"
+        "price": 200.99
     }
     const burger2 = {
         "title": "titre mod",
         "description": "c bon",
-        "price": 200.99,
-        "image": "beau burger"
+        "price": 200.99
     }
     
     beforeEach(async() => {

@@ -49,7 +49,16 @@ router.post("/register", async function (req, res, next) {
     password: user.password,
     role: user.role,
     id: user.id,
-  }).then((result) => res.json(result));
+  }).then((result) => {
+
+    const token = auth.generateAccessToken(result.username, result.id, result.role);
+    return res.json({
+      access_token: token,
+      username: result.username,
+      role: result.role,
+      id: result.id,
+    });
+  });
 });
 
 module.exports = router;

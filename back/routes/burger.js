@@ -36,15 +36,23 @@ router.get("/:id", async function (req, res, next) {
 });
 // POST
 router.post('/',[checkTokenMiddleware,isAdminUser,upload.single('burgerImage')],async function(req, res, next) {
-    const file = req.file
+    const file = req.file;
+
+    let image = null;
+    if (file) {
+      image = 'http://localhost:7000/images/' + file.filename;
+    }
+
     console.log(file)
     const burger = req.body;
+
+
 
         await db.Burger.create({
             title: burger.title,
             description: burger.description,
             price: burger.price,
-            image: 'http://localhost:7000/images/' + file.filename,
+            image: image,
           }).then((result) => res.json(result));
 });
 // PUT
@@ -77,13 +85,14 @@ router.delete(
     if (burgerDb) {
       await burgerDb.destroy();
       const fileurl = burgerDb.image;
-      var index = fileurl.lastIndexOf("/");
-      var fileName = fileurl.substr(index);
-      console.log(fileName);
-      fs.unlink('./public/images/' + fileName, (err) => {
-        if (err) throw err;
-        console.log('successfully deleted ./public/images/' + fileName);
-      });
+      if (fileurl) {
+        var index = fileurl.lastIndexOf("/");
+        var fileName = fileurl.substr(index);
+        fs.unlink('./public/images/' + fileName, (err) => {
+          if (err) throw err;
+          console.log('successfully deleted ./public/images/' + fileName);
+        });
+      }
       res.sendStatus(200);
     } else {
       res.status(404).json({ message: "Error. Incorrect Burger Id" });
