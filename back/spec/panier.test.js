@@ -19,8 +19,6 @@ let access_token = null;
 let user_id = null;
 
 beforeAll(async () => {
-    await cleanDb(db);
-
     responseLogin= await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
     access_token = responseLogin.body.access_token;
     user_id = responseLogin.body.id;

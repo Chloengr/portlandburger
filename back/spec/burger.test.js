@@ -10,8 +10,8 @@ const factory = require('factory-girl').factory
 
 /* Permet de se connecter */
 const account = {
-    "username": "user",
-    "password": "user"
+    "username": "admin",
+    "password": "admin"
 };
 
 /* Permet de créer un burger */
@@ -35,10 +35,10 @@ let access_token = null;
 let burger_post = null;
 
 beforeAll(async() => {
+    await cleanDb(db, 'burger');
     burgers = await factory.createMany('Burgers', 20)
     responseLogin= await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
     access_token = responseLogin.body.access_token;
-    //await cleanDb(db, 'burger');
 });
 
 afterAll(async() => {
@@ -55,7 +55,7 @@ describe('get burgers', () => {
     test('Burger CRUD Response', async() => {
         expect(responseBurgers.statusCode).toBe(200);
 
-        expect(responseBurgers.body.length).toBe(40);
+        expect(responseBurgers.body.length).toBe(20);
     });
 });
 

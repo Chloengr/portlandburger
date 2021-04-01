@@ -10,6 +10,9 @@ const cleanDb = async(db, type='all') => {
     if (type === 'all' || type === 'burger') {
         await db.Burger.destroy({ truncate: { cascade: true } });
     }
+    if (type === 'all' || type === 'user') {
+        await db.User.destroy({ truncate: { cascade: true } });
+    }
     
     
 }
