@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     Panier.belongsTo(models.User, {foreignKey:'UserId'})
   }
   Panier.associate = (models) => {
-    Panier.hasMany(models.Panier_Burger)
+    Panier.hasMany(models.Panier_Burger, { onDelete: 'cascade' })
   }
   return Panier;
 };
