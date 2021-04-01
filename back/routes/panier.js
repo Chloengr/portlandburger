@@ -75,6 +75,33 @@ router.post("/", async function (req, res, next) {
   }
 });
 
+/* Delete Panier of User listing. */
+router.delete("/:userId", async function (req, res, next) {
+  const userId = req.params.userId;
+  let panierDb;
+
+  if (!userId) {
+    return res.sendStatus(400).json({ message: "Bad request." });
+  }
+
+  panierDb = await db.Panier.findOne({ where: { UserId: userId } });
+
+  if (!panierDb) {
+    return res.sendStatus(400).json({ message: "Bad request." });
+  }
+
+  const panierBurger = await db.Panier_Burger.findAll({
+    where: { PanierId: panierDb.id }
+  });
+
+  panierBurger.forEach(async element => {
+    await element.destroy();
+  });
+
+  await panierDb.destroy();
+  res.sendStatus(200);
+});
+
 /* POST Add Burger in Panier of User listing. */
 router.post("/burger", async function (req, res, next) {
   const panier = req.body;
