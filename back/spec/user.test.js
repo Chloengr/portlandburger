@@ -14,7 +14,7 @@ afterAll(async() => {
     // await db.close()
 });
 
-describe('Register', () => {
+describe('Register and Login', () => {
 
     const user = {
         "username": "user",
@@ -31,6 +31,8 @@ describe('Register', () => {
     beforeEach(async() => {
         responseUser = await request(app).post('/users/register').set('Content-Type', 'application/json').send(user).catch((e) => console.log(e));
         responseAdmin = await request(app).post('/users/register').set('Content-Type', 'application/json').send(admin).catch((e) => console.log(e));
+
+        responseLogin = await request(app).post('/users/login').set('Content-Type', 'application/json').send(user).catch((e) => console.log(e));
     })
 
     test('Register Response', async() => {
@@ -39,5 +41,8 @@ describe('Register', () => {
 
         expect(responseAdmin.statusCode).toBe(200);
         expect(responseAdmin.body.role).toBe("ADMIN");
+
+
+        expect(responseLogin.statusCode).toBe(200);
     });
 });
