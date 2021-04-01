@@ -9,7 +9,7 @@ import { notificationError, returnUiMessage } from "../utils/utils";
 const ShoppingCart = () => {
   const columns = [
     {
-      title: "Name",
+      title: "Nom",
       dataIndex: "name",
       key: "name",
     },
@@ -76,18 +76,6 @@ const ShoppingCart = () => {
       };
     });
   };
-
-  const {
-    mutate: mutateRemove,
-  } = carts.useDeleteCart();
-
-  const removeCart = () =>{
-    try {
-      mutateRemove(user.id);
-    } catch (e) {
-      notificationError(e);
-    }
-  }
   
   return (
     <>
@@ -107,7 +95,6 @@ const ShoppingCart = () => {
             size="large"
             icon={<EuroOutlined />}
             disabled={!data?.panier.length}
-            onClick={() => removeCart()}
           >
             Je veux commander
           </Button>

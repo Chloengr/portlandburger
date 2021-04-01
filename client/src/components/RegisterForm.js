@@ -46,7 +46,7 @@ const RegisterForm = () => {
       </Form.Item>
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" shape="round">
-          Submit
+          Inscription
         </Button>
       </Form.Item>
     </Form>

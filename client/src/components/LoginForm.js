@@ -52,7 +52,7 @@ const LoginForm = () => {
           shape="round"
           data-cy="submit-login"
         >
-          Submit
+          Connexion
         </Button>
       </Form.Item>
     </Form>
