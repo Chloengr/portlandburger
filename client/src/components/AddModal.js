@@ -1,23 +1,22 @@
 import { LikeOutlined } from "@ant-design/icons";
-import { Button, Input, notification, Form, Modal } from "antd";
+import { Button, Form, Input, message, Modal } from "antd";
 import { useState } from "react";
 import { useApi } from "../contexts/ApiContext";
-
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 12 },
-};
-
-const tailLayout = {
-  wrapperCol: { offset: 10, span: 2 },
-};
+import {
+  layout,
+  notificationError,
+  returnUiMessage,
+  tailLayout,
+} from "../utils/utils";
 
 const AddModal = (props) => {
-  const [isValid, setValidForm] = useState(false);
   const { burgers } = useApi();
-  const { mutate } = burgers.usePostBurger();
 
-  const onFinish = async (values) => {
+  const [isValid, setValidForm] = useState(false);
+
+  const { mutate, status, error } = burgers.usePostBurger();
+
+  const onFinish = (values) => {
     const formData = new FormData();
     var imagedata = document.querySelector('input[type="file"]').files[0];
     formData.append("burgerImage", imagedata);
@@ -25,19 +24,16 @@ const AddModal = (props) => {
     formData.append("description", values.description);
     formData.append("price", values.price);
     try {
-      const data = await mutate(formData);
+      mutate(formData);
       setValidForm(true);
     } catch (e) {
-      notification.open({
-        message: e.message,
-        description: "Échec, veuillez réessayer.",
-        type: "error",
-      });
+      notificationError(e);
     }
+    returnUiMessage(status, error, "Burger ajouté 🍔");
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.error("Failed:", errorInfo);
+    message.error(`Il y a eu une erreur ${errorInfo}`);
   };
   return (
     <Modal

@@ -3,6 +3,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import { notificationError } from "../../utils/utils";
 import { URL } from "../ApiContext/utils";
 
 const AuthContext = React.createContext({
@@ -60,11 +61,7 @@ export const AuthProvider = (props) => {
         isLoggedIn: true,
       });
     } catch (e) {
-      notification.open({
-        message: e.message,
-        description: "Échec de l'identification, veuillez réessayer.",
-        type: "error",
-      });
+      notificationError(e);
     }
   };
 

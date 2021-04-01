@@ -1,14 +1,7 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 12 },
-};
-const tailLayout = {
-  wrapperCol: { offset: 4, span: 12 },
-};
+import { layout, tailLayout } from "../utils/utils";
 
 const Homepage = () => {
   const { login } = useAuth();
@@ -24,7 +17,7 @@ const Homepage = () => {
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    message.error(`Il y a eu une erreur ${errorInfo}`);
   };
 
   return (

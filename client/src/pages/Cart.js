@@ -1,8 +1,10 @@
 import { DeleteOutlined, EuroOutlined } from "@ant-design/icons";
-import { Button, Space, Table } from "antd";
+import { Button, message, Space, Table } from "antd";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import { useApi } from "../contexts/ApiContext";
 import { useAuth } from "../contexts/AuthContext";
+import { notificationError, returnUiMessage } from "../utils/utils";
 
 const ShoppingCart = () => {
   const columns = [
@@ -41,14 +43,24 @@ const ShoppingCart = () => {
   const { carts } = useApi();
   const { user } = useAuth();
 
-  const { isLoading, error, data } = carts.useGetUserPanier(user.id);
-  const { mutate } = carts.useDeleteBurgersInCart();
+  const { isLoading, data, error } = carts.useGetUserPanier(user.id);
+  const {
+    mutate: mutateDelete,
+    status: statusDelete,
+    error: errorDelete,
+  } = carts.useDeleteBurgersInCart();
 
   const deleteBurger = (burgerId) => {
-    mutate({
-      PanierId: data.panierId,
-      BurgerId: burgerId,
-    });
+    try {
+      mutateDelete({
+        PanierId: data.panierId,
+        BurgerId: burgerId,
+      });
+    } catch (e) {
+      notificationError(e);
+    }
+
+    returnUiMessage(statusDelete, errorDelete, "Burger supprimé du panier.");
   };
 
   if (isLoading) return "Loading...";
@@ -76,14 +88,16 @@ const ShoppingCart = () => {
           rowKey={(obj) => obj.burgerId}
         />
         <h2>Total {data?.total} €</h2>
-        <Button
-          type="primary"
-          shape="round"
-          size="large"
-          icon={<EuroOutlined />}
-        >
-          Je veux commander
-        </Button>
+        <Link to="/congrats">
+          <Button
+            type="primary"
+            shape="round"
+            size="large"
+            icon={<EuroOutlined />}
+          >
+            Je veux commander
+          </Button>
+        </Link>
       </div>
     </>
   );
