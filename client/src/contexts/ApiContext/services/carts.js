@@ -3,8 +3,8 @@ import { useAuth } from "../../AuthContext";
 import { callAuthenticatedApi, URL } from "../utils";
 
 export const useGetUserCart = (userId) => {
-  return useQuery(["paniers", userId], async () => {
-    const { data } = await callAuthenticatedApi(`${URL}/paniers/${userId}`);
+  return useQuery(["carts", userId], async () => {
+    const { data } = await callAuthenticatedApi(`${URL}/carts/${userId}`);
     return data;
   });
 };
@@ -15,7 +15,7 @@ export const useDeleteBurgersInCart = () => {
 
   return useMutation(
     (payload) => {
-      const { data } = callAuthenticatedApi(`${URL}/paniers/burger/remove`, {
+      const { data } = callAuthenticatedApi(`${URL}/carts/burger/remove`, {
         method: "PUT",
         data: payload,
       });
@@ -23,7 +23,7 @@ export const useDeleteBurgersInCart = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["paniers", user.id]);
+        queryClient.invalidateQueries(["carts", user.id]);
       },
     }
   );
@@ -34,7 +34,7 @@ export const useAddBurgerInCart = () => {
   const { user } = useAuth();
   return useMutation(
     (payload) => {
-      const { data } = callAuthenticatedApi(`${URL}/paniers/burger`, {
+      const { data } = callAuthenticatedApi(`${URL}/carts/burger`, {
         method: "POST",
         data: payload,
       });
@@ -42,25 +42,17 @@ export const useAddBurgerInCart = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["paniers", user.id]);
+        queryClient.invalidateQueries(["carts", user.id]);
       },
     }
   );
 };
 
 export const useDeleteCart = () => {
-  const queryClient = useQueryClient();
-  return useMutation(
-    (userId) => {
-      const { data } = callAuthenticatedApi(`${URL}/paniers/${userId}`, {
-        method: "DELETE",
-      });
-      return data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("burgers");
-      },
-    }
-  );
+  return useMutation((userId) => {
+    const { data } = callAuthenticatedApi(`${URL}/carts/${userId}`, {
+      method: "DELETE",
+    });
+    return data;
+  });
 };

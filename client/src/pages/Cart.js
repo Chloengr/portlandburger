@@ -54,7 +54,7 @@ const ShoppingCart = () => {
   const deleteBurger = (burgerId) => {
     try {
       mutateDelete({
-        PanierId: data.panierId,
+        CartId: data.cartId,
         BurgerId: burgerId,
       });
     } catch (e) {
@@ -62,6 +62,16 @@ const ShoppingCart = () => {
     }
 
     returnUiMessage(statusDelete, errorDelete, "Burger supprimé du panier.");
+  };
+
+  const { mutate: mutateRemove } = carts.useDeleteCart();
+
+  const removeCart = () => {
+    try {
+      mutateRemove(user.id);
+    } catch (e) {
+      notificationError(e);
+    }
   };
 
   if (isLoading) return "Loading...";
@@ -78,18 +88,6 @@ const ShoppingCart = () => {
     });
   };
 
-  const {
-    mutate: mutateRemove,
-  } = carts.useDeleteCart();
-
-  const removeCart = () =>{
-    try {
-      mutateRemove(user.id);
-    } catch (e) {
-      notificationError(e);
-    }
-  }
-  
   return (
     <>
       <Header />
@@ -98,7 +96,7 @@ const ShoppingCart = () => {
         <Table
           data-cy="cart-table"
           columns={columns}
-          dataSource={formatData(data?.panier)}
+          dataSource={formatData(data?.cart)}
           rowKey={(obj) => obj.burgerId}
         />
         <h2>Total {data?.total} €</h2>
@@ -108,7 +106,7 @@ const ShoppingCart = () => {
             shape="round"
             size="large"
             icon={<EuroOutlined />}
-            disabled={!data?.panier.length}
+            disabled={!data?.cart.length}
             onClick={() => removeCart()}
           >
             Je veux commander

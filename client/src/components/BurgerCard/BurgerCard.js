@@ -42,7 +42,7 @@ const BurgerCard = (props) => {
     try {
       mutateAdd({
         BurgerId: id,
-        PanierId: data?.panierId.id,
+        CartId: data?.cartId.id,
         UserId: user.id,
         qte: quantity,
       });
