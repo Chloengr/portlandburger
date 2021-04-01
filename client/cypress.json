@@ -1,7 +1,7 @@
 {
-  "fixturesFolder": false,
-  "testFiles": "**/*.spec.js",  
-  "nodeVersion":"system",
+  "fixturesFolder": "cypress/fixtures",
+  "testFiles": "**/*.spec.js",
+  "nodeVersion": "system",
   "experimentalComponentTesting": true,
   "experimentalFetchPolyfill": true,
   "baseUrl": "http://localhost:3000/",

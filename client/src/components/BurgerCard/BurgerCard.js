@@ -99,7 +99,7 @@ const BurgerCard = (props) => {
         cover={<img alt="burger" src={image} />}
         actions={user.isAdmin ? actionsAdmin : actionsUser}
       >
-        <Meta title={title} description={description} />
+        <Meta title={title} description={description} data-cy="title-burger" />
         <div className="flex">
           <InputNumber
             min={1}

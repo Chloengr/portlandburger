@@ -49,23 +49,25 @@ const AddModal = (props) => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item label="Intitulé" name="title">
-          <Input />
+          <Input data-cy="add-title-burger" />
         </Form.Item>
 
         <Form.Item label="Description" name="description">
-          <Input />
+          <Input data-cy="add-desc-burger" />
         </Form.Item>
 
         <Form.Item label="Prix" name="price">
-          <Input />
+          <Input data-cy="add-price-burger" />
         </Form.Item>
 
         <Form.Item label="Image" name="image">
-          <Input type="file" name="burgerImage" />
+          <Input type="file" name="burgerImage" data-cy="add-img-burger" />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button htmlType="submit">Confirmer</Button>
+          <Button htmlType="submit" data-cy="submit-add-burger">
+            Confirmer
+          </Button>
           {isValid && <LikeOutlined />}
         </Form.Item>
       </Form>
