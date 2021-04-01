@@ -68,6 +68,7 @@ const BurgerCard = (props) => {
 
   const actionsAdmin = [
     <EditOutlined
+      data-cy="edit-burger-btn"
       style={{ fontSize: "20px", color: "white" }}
       onClick={() => {
         setEditModal(true);
