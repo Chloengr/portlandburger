@@ -1,5 +1,29 @@
 const jwt = require("jsonwebtoken");
 const db = require("../models");
+const crypto = require('crypto')
+const algorithm = 'aes-256-ctr';
+const iv = crypto.randomBytes(16);
+const encrypt = (text) => {
+
+  const cipher = crypto.createCipheriv(algorithm, process.env.PASSWORD_SECRET, iv);
+
+  const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+
+  return {
+      iv: iv.toString('hex'),
+      content: encrypted.toString('hex')
+  };
+};
+
+const decrypt = (hash) => {
+
+  const decipher = crypto.createDecipheriv(algorithm, process.env.PASSWORD_SECRET, Buffer.from(hash.iv, 'hex'));
+
+  const decrpyted = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
+
+  return decrpyted.toString();
+};
+
 /* Récupération du header bearer */
 const extractBearerToken = (headerValue) => {
   if (typeof headerValue !== "string") {
@@ -58,7 +82,16 @@ const isAdminUser = async (req, res, next) => {
       .json({ message: "Error. You dont have permission to do this" });
   }
 };
-exports.checkTokenMiddleware = checkTokenMiddleware;
-exports.generateAccessToken = generateAccessToken;
-exports.decodeToken = decodeToken;
-exports.isAdminUser = isAdminUser;
+// exports.checkTokenMiddleware = checkTokenMiddleware;
+// exports.generateAccessToken = generateAccessToken;
+// exports.decodeToken = decodeToken;
+// exports.isAdminUser = isAdminUser;
+
+module.exports = {
+  encrypt,
+  decrypt,
+  checkTokenMiddleware,
+  generateAccessToken,
+  decodeToken,
+  isAdminUser
+};
