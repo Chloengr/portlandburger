@@ -23,7 +23,6 @@ describe("add burger", () => {
       .get(".ant-modal-footer > .ant-btn-primary")
       .click()
       .getDataCy("title-burger")
-      .last()
-      .contains("Burger London");
+      .should("have.length", 2);
   });
 });

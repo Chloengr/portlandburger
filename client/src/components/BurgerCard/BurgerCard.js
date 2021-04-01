@@ -74,6 +74,7 @@ const BurgerCard = (props) => {
       }}
     />,
     <DeleteOutlined
+      data-cy="delete-burger-btn"
       style={{ fontSize: "20px", color: "white" }}
       onClick={() => {
         setIsModalVisibleDel(true);
