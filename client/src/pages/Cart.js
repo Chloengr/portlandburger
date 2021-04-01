@@ -77,6 +77,18 @@ const ShoppingCart = () => {
     });
   };
 
+  const {
+    mutate: mutateRemove,
+  } = carts.useDeleteCart();
+
+  const removeCart = () =>{
+    try {
+      mutateRemove(user.id);
+    } catch (e) {
+      notificationError(e);
+    }
+  }
+  
   return (
     <>
       <Header />
@@ -94,6 +106,7 @@ const ShoppingCart = () => {
             shape="round"
             size="large"
             icon={<EuroOutlined />}
+            onClick={() => removeCart()}
           >
             Je veux commander
           </Button>

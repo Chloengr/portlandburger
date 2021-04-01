@@ -47,3 +47,20 @@ export const useAddBurgerInCart = () => {
     }
   );
 };
+
+export const useDeleteCart = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (userId) => {
+      const { data } = callAuthenticatedApi(`${URL}/paniers/${userId}`, {
+        method: "DELETE",
+      });
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("burgers");
+      },
+    }
+  );
+};
