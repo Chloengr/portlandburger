@@ -95,7 +95,7 @@ const ShoppingCart = () => {
             shape="round"
             size="large"
             icon={<EuroOutlined />}
-            disabled={!data?.panier.length}
+            disabled={!data?.cart.length}
           >
             Je veux commander
           </Button>
