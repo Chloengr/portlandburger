@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useAuth } from "../../AuthContext";
 import { callAuthenticatedApi, URL } from "../utils";
 
-export const useGetUserPanier = (userId) => {
+export const useGetUserCart = (userId) => {
   return useQuery(["paniers", userId], async () => {
     const { data } = await callAuthenticatedApi(`${URL}/paniers/${userId}`);
     return data;

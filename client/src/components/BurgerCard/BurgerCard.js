@@ -36,7 +36,7 @@ const BurgerCard = (props) => {
     status: statusAdd,
     error: errorAdd,
   } = carts.useAddBurgerInCart();
-  const { data } = carts.useGetUserPanier(user.id);
+  const { data } = carts.useGetUserCart(user.id);
 
   const addBurgerinCart = () => {
     try {
