@@ -14,7 +14,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-const {checkTokenMiddleware, decodeToken,isAdminUser } = require('../auth/auth')
+const { checkTokenMiddleware, decodeToken, isAdminUser } = require('../auth/auth')
 /* GET Burgers listing. */
 router.get("/", checkTokenMiddleware, async function (req, res, next) {
   const burgers = await db.Burger.findAll();
@@ -35,25 +35,23 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 // POST
-router.post('/',[checkTokenMiddleware,isAdminUser,upload.single('burgerImage')],async function(req, res, next) {
-    const file = req.file;
+router.post('/', [checkTokenMiddleware, isAdminUser, upload.single('burgerImage')], async function (req, res, next) {
+  const file = req.file;
 
-    let image = null;
-    if (file) {
-      image = 'http://localhost:7000/images/' + file.filename;
-    }
-
-    console.log(file)
-    const burger = req.body;
+  let image = null;
+  if (file) {
+    image = 'http://localhost:7000/images/' + file.filename;
+  }
+  const burger = req.body;
 
 
 
-        await db.Burger.create({
-            title: burger.title,
-            description: burger.description,
-            price: burger.price,
-            image: image,
-          }).then((result) => res.json(result));
+  await db.Burger.create({
+    title: burger.title,
+    description: burger.description,
+    price: burger.price,
+    image: image,
+  }).then((result) => res.json(result));
 });
 // PUT
 router.put(
