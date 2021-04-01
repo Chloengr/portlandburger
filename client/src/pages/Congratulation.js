@@ -19,10 +19,9 @@ const Congrats = () => {
               <Button shape="round" icon={<FireOutlined />}>
                 Retour aux burgers
               </Button>
-            </Link>,
+            </Link>
           ]}
         />
-        ,
       </div>
     </>
   );

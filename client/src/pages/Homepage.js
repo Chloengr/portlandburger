@@ -18,16 +18,29 @@ const Homepage = () => {
       >
         <h1 className="title">Bienvenue cher ami !</h1>
 
-        <h2>Connecte-toi</h2>
-        <LoginForm />
-
-        <Button
-          onClick={() => setIsRegister(true)}
-          style={{ marginBottom: "2rem" }}
-        >
-          Je ne suis pas encore inscris
-        </Button>
-        {isRegister && <RegisterForm />}
+        {!isRegister && 
+        <>
+          <h2>Connecte-toi</h2>
+          <LoginForm />
+          <Button
+            onClick={() => setIsRegister(true)}
+            style={{ marginBottom: "2rem" }}
+          >
+            Je ne suis pas encore inscris
+          </Button>
+        </>}
+        
+        {isRegister && 
+        <>
+          <h2>Inscrit-toi</h2>
+          <RegisterForm />
+          <Button
+            onClick={() => setIsRegister(false)}
+            style={{ marginBottom: "2rem" }}
+          >
+            J'ai déjà un compte
+          </Button>
+        </>}
       </div>
     </>
   );
