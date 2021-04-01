@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User',
   });
   User.associate = (models) => {
-    User.hasOne(models.Panier)
+    User.hasOne(models.Cart)
   }
   return User;
 };

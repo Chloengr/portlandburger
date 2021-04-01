@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Panier extends Model {
+  class Cart extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  Panier.init({
+  Cart.init({
     date: DataTypes.DATE
   }, {
     sequelize,
-    modelName: 'Panier',
+    modelName: 'Cart',
   });
-  Panier.associate = (models) => {
-    Panier.belongsTo(models.User, {foreignKey:'UserId'})
+  Cart.associate = (models) => {
+    Cart.belongsTo(models.User, {foreignKey:'UserId'})
   }
-  Panier.associate = (models) => {
-    Panier.hasMany(models.Panier_Burger, { onDelete: 'cascade' })
+  Cart.associate = (models) => {
+    Cart.hasMany(models.Cart_Burger, { onDelete: 'cascade' })
   }
-  return Panier;
+  return Cart;
 };
