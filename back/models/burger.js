@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Burger',
   });
   Burger.associate = (models) => {
-    Burger.hasMany(models.Panier_Burger)
+    Burger.hasMany(models.Cart_Burger)
   }
   return Burger;
 };

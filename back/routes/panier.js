@@ -2,163 +2,163 @@ var express = require("express");
 var router = express.Router();
 const db = require("../models");
 
-/* GET Paniers listing. */
+/* GET Carts listing. */
 router.get("/", async function (req, res, next) {
-  const paniers = await db.Panier.findAll();
-  if (paniers) {
-    res.json(paniers);
+  const carts = await db.Cart.findAll();
+  if (carts) {
+    res.json(carts);
   } else {
     res.sendStatus(404);
   }
 });
 
-/* GET Panier of UserID listing. */
+/* GET Cart of UserID listing. */
 
 router.get("/:userId", async function (req, res, next) {
   const userId = req.params.userId;
-  let panierDb;
+  let cartDb;
 
   if (!userId) {
     return res.sendStatus(400).json({ message: "Bad request." });
   }
 
-  panierDb = await db.Panier.findOne({ where: { UserId: userId } });
+  cartDb = await db.Cart.findOne({ where: { UserId: userId } });
 
-  if (!panierDb) {
-    await db.Panier.create({
+  if (!cartDb) {
+    await db.Cart.create({
       UserId: userId,
       date: new Date(),
-    }).then((result) => (panierDb = result));
+    }).then((result) => (cartDb = result));
   }
 
-  const panierBurger = await db.Panier_Burger.findAll({
-    where: { PanierId: panierDb.id },
+  const cartBurger = await db.Cart_Burger.findAll({
+    where: { CartId: cartDb.id },
     include: [{ model: db.Burger }],
   });
 
-  if (!panierBurger || panierBurger.length === 0) {
-    return res.json({ panierId: panierDb.id, panier: [], total: 0 });
+  if (!cartBurger || cartBurger.length === 0) {
+    return res.json({ cartId: cartDb.id, cart: [], total: 0 });
   }
 
 
   const reducer = (total, element) =>
     total + element.qte * element.Burger.price;
 
-  const total = panierBurger.reduce(reducer, 0);
+  const total = cartBurger.reduce(reducer, 0);
 
   return res.json({
-    panierId: panierDb.id,
-    panier: panierBurger,
+    cartId: cartDb.id,
+    cart: cartBurger,
     total: total,
   });
 });
 
-/* POST Create Panier of User listing. */
+/* POST Create Cart of User listing. */
 router.post("/", async function (req, res, next) {
-  const panier = req.body;
-  const usersDb = await db.User.findOne({ where: { id: panier.UserId } });
+  const cart = req.body;
+  const usersDb = await db.User.findOne({ where: { id: cart.UserId } });
 
   if (usersDb) {
-    const panierDb = await db.Panier.findOne({ where: { UserId: usersDb.id } });
+    const cartDb = await db.Cart.findOne({ where: { UserId: usersDb.id } });
 
-    if (!panierDb) {
-      await db.Panier.create({
+    if (!cartDb) {
+      await db.Cart.create({
         UserId: usersDb.id,
         date: new Date(),
       }).then((result) => res.json(result));
     } else {
-      res.json({ message: "Error. Panier is already created" });
+      res.json({ message: "Error. Cart is already created" });
     }
   } else {
     res.json({ message: "Error. User not found" });
   }
 });
 
-/* Delete Panier of User listing. */
+/* Delete Cart of User listing. */
 router.delete("/:userId", async function (req, res, next) {
   const userId = req.params.userId;
-  let panierDb;
+  let cartDb;
 
   if (!userId) {
     return res.sendStatus(400).json({ message: "Bad request." });
   }
 
-  panierDb = await db.Panier.findOne({ where: { UserId: userId } });
+  cartDb = await db.Cart.findOne({ where: { UserId: userId } });
 
-  if (!panierDb) {
+  if (!cartDb) {
     return res.sendStatus(400).json({ message: "Bad request." });
   }
 
-  const panierBurger = await db.Panier_Burger.findAll({
-    where: { PanierId: panierDb.id }
+  const cartBurger = await db.Cart_Burger.findAll({
+    where: { CartId: cartDb.id }
   });
 
-  panierBurger.forEach(async element => {
+  cartBurger.forEach(async element => {
     await element.destroy();
   });
 
-  await panierDb.destroy();
+  await cartDb.destroy();
   res.sendStatus(200);
 });
 
-/* POST Add Burger in Panier of User listing. */
+/* POST Add Burger in Cart of User listing. */
 router.post("/burger", async function (req, res, next) {
-  const panier = req.body;
+  const cart = req.body;
 
-  const panierDb = await db.Panier.findOne({
-    where: { UserId: panier.UserId },
+  const cartDb = await db.Cart.findOne({
+    where: { UserId: cart.UserId },
   });
-  if (panierDb) {
-    const panierBurgerDb = await db.Panier_Burger.findOne({
-      where: { BurgerId: panier.BurgerId, PanierId: panierDb.id },
+  if (cartDb) {
+    const cartBurgerDb = await db.Cart_Burger.findOne({
+      where: { BurgerId: cart.BurgerId, CartId: cartDb.id },
     });
-    if (!panierBurgerDb) {
-      await db.Panier_Burger.create({
-        PanierId: panierDb.id,
-        BurgerId: panier.BurgerId,
-        qte: panier.qte || 1,
+    if (!cartBurgerDb) {
+      await db.Cart_Burger.create({
+        CartId: cartDb.id,
+        BurgerId: cart.BurgerId,
+        qte: cart.qte || 1,
       }).then((result) => res.json(result));
     } else {
-      panierBurgerDb.qte += panier.qte || 1;
-      await panierBurgerDb.save();
-      res.json(panierBurgerDb);
+      cartBurgerDb.qte += cart.qte || 1;
+      await cartBurgerDb.save();
+      res.json(cartBurgerDb);
     }
   } else {
     res.sendStatus(404);
   }
 });
 
-/* POST Plus One Burger in Panier of User listing. */
+/* POST Plus One Burger in Cart of User listing. */
 router.put("/burger/add", async function (req, res, next) {
-  const panier = req.body;
+  const cart = req.body;
 
-  const panierBurgerDb = await db.Panier_Burger.findOne({
-    where: { BurgerId: panier.BurgerId, PanierId: panier.PanierId },
+  const cartBurgerDb = await db.Cart_Burger.findOne({
+    where: { BurgerId: cart.BurgerId, CartId: cart.CartId },
   });
 
-  if (panierBurgerDb) {
-    panierBurgerDb.qte++;
-    await panierBurgerDb.save();
-    res.json(panierBurgerDb);
+  if (cartBurgerDb) {
+    cartBurgerDb.qte++;
+    await cartBurgerDb.save();
+    res.json(cartBurgerDb);
   } else {
     res.sendStatus(404);
   }
 });
-/* POST Less One Burger in Panier of User listing. */
+/* POST Less One Burger in Cart of User listing. */
 router.put("/burger/remove", async function (req, res, next) {
-  const panier = req.body;
+  const cart = req.body;
 
-  const panierBurgerDb = await db.Panier_Burger.findOne({
-    where: { BurgerId: panier.BurgerId, PanierId: panier.PanierId },
+  const cartBurgerDb = await db.Cart_Burger.findOne({
+    where: { BurgerId: cart.BurgerId, CartId: cart.CartId },
   });
 
-  if (panierBurgerDb) {
-    panierBurgerDb.qte--;
-    if (panierBurgerDb.qte > 0) {
-      await panierBurgerDb.save();
-      res.json(panierBurgerDb);
+  if (cartBurgerDb) {
+    cartBurgerDb.qte--;
+    if (cartBurgerDb.qte > 0) {
+      await cartBurgerDb.save();
+      res.json(cartBurgerDb);
     } else {
-      await panierBurgerDb.destroy();
+      await cartBurgerDb.destroy();
       res.json(200);
     }
   } else {
