@@ -26,25 +26,27 @@ export const AuthProvider = (props) => {
     isLoggedIn: true,
   });
 
-  const { mutate } = useMutation((params) =>
-    axios.post(`${URL}/users/users/register`, params)
+  const { mutateAsync: mutateRegiter } = useMutation((params) =>
+    axios.post(`${URL}/users/register`, params)
   );
 
   const register = async (payload) => {
     try {
-      const response = await mutate({...payload, role: 'USER'});
+      const response = await  mutateRegiter({...payload, role: 'USER'});
       console.log('register response', response);
-
+      
       localStorage.setItem(JWT_LOCALSTORAGE_KEY, response.data.access_token);
+      const jwt = jwtDecode(response.data.access_token);
 
-      setUser(response.data)
+      setUser({
+        id: jwt.id,
+        username: jwt.username,
+        isAdmin: false,
+        isLoggedIn: true,
+      });
 
     } catch (e) {
-      notification.open({
-        message: e.message,
-        description: "Échec de l'inscription, veuillez réessayer.",
-        type: "error",
-      });
+      notificationError(e);
     }
   };
 
