@@ -1,28 +1,22 @@
-import { Button, Form, Input, message } from "antd";
-import { useHistory } from "react-router-dom";
+import { Button, Form, Input } from "antd";
+import { Redirect } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { layout, tailLayout } from "../utils/utils";
 
 const RegisterForm = () => {
-  const { register } = useAuth();
+  const { register, user } = useAuth();
 
-  let history = useHistory();
-
-  const redirectToBurgers = () => {
-    history.push("/burgers");
-  };
   const onFinish = (values) => {
-    try {
-      register(values);
-      redirectToBurgers();
-    } catch (e) {
-      message.error(e);
-    }
+    register(values);
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    console.error("Failed:", errorInfo);
   };
+
+  if (user.id !== null) {
+    return <Redirect to={"/burgers"} />;
+  }
 
   return (
     <Form

@@ -1,5 +1,5 @@
 import { DeleteOutlined, EuroOutlined } from "@ant-design/icons";
-import { Button, message, Space, Table } from "antd";
+import { Button, Space, Table } from "antd";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import { useApi } from "../contexts/ApiContext";
@@ -22,7 +22,7 @@ const ShoppingCart = () => {
       title: "Prix",
       dataIndex: "price",
       key: "price",
-      render: (text) => <a>{text} €</a>,
+      render: (text) => `${text} €`,
     },
     {
       title: "Action",

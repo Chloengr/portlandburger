@@ -1,16 +1,13 @@
-import { notification } from "antd";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
-import { useHistory } from "react-router-dom";
 import { notificationError } from "../../utils/utils";
 import { URL } from "../ApiContext/utils";
 
 const AuthContext = React.createContext({
   login: async () => {},
   logout: async () => {},
-
   user: {
     id: null,
     username: null,
@@ -18,6 +15,7 @@ const AuthContext = React.createContext({
     isLoggedIn: true,
   },
 });
+
 export const JWT_LOCALSTORAGE_KEY = "jwt";
 export const AuthProvider = (props) => {
   const [user, setUser] = useState({
@@ -32,6 +30,7 @@ export const AuthProvider = (props) => {
   );
 
   const register = async (payload) => {
+    
     try {
       const response = await mutateRegiter({ ...payload, role: "USER" });
 
