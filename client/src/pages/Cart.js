@@ -95,6 +95,7 @@ const ShoppingCart = () => {
       <div className="container">
         <h1 style={{ marginTop: "4rem" }}>Récapitulatif de votre commande</h1>
         <Table
+          data-cy="cart-table"
           columns={columns}
           dataSource={formatData(data?.panier)}
           rowKey={(obj) => obj.burgerId}

@@ -85,6 +85,7 @@ const BurgerCard = (props) => {
 
   const actionsUser = [
     <ShoppingCartOutlined
+      data-cy="add-to-cart-btn"
       style={{ fontSize: "20px", color: "white" }}
       onClick={() => addBurgerinCart()}
     />,
