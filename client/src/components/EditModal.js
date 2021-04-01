@@ -45,7 +45,7 @@ const EditModal = (props) => {
           onFinishFailed={onFinishFailed}
         >
           <Form.Item label="Intitulé" name="title">
-            <Input placeholder={props.title} />
+            <Input placeholder={props.title} data-cy="edit-title-burger" />
           </Form.Item>
 
           <Form.Item label="Description" name="description">
@@ -61,7 +61,9 @@ const EditModal = (props) => {
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Button htmlType="submit">Modifier</Button>
+            <Button htmlType="submit" data-cy="submit-edit-burger">
+              Modifier
+            </Button>
             {isValid && <LikeOutlined />}
           </Form.Item>
         </Form>

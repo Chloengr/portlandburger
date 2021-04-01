@@ -30,16 +30,4 @@ describe("login works", () => {
       .url()
       .should("include", "/burgers");
   });
-
-  it("should login as admin if credentials are good", () => {
-    cy.getDataCy("username-input")
-      .type("admin")
-      .getDataCy("password-input")
-      .type("password")
-
-      .getDataCy("submit-login")
-      .click()
-      .url()
-      .should("include", "/burgers");
-  });
 });

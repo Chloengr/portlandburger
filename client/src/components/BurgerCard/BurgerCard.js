@@ -42,7 +42,7 @@ const BurgerCard = (props) => {
     try {
       mutateAdd({
         BurgerId: id,
-        PanierId: data?.panierId.id,
+        CartId: data?.cartId.id,
         UserId: user.id,
         qte: quantity,
       });
@@ -68,12 +68,14 @@ const BurgerCard = (props) => {
 
   const actionsAdmin = [
     <EditOutlined
+      data-cy="edit-burger-btn"
       style={{ fontSize: "20px", color: "white" }}
       onClick={() => {
         setEditModal(true);
       }}
     />,
     <DeleteOutlined
+      data-cy="delete-burger-btn"
       style={{ fontSize: "20px", color: "white" }}
       onClick={() => {
         setIsModalVisibleDel(true);
@@ -83,6 +85,7 @@ const BurgerCard = (props) => {
 
   const actionsUser = [
     <ShoppingCartOutlined
+      data-cy="add-to-cart-btn"
       style={{ fontSize: "20px", color: "white" }}
       onClick={() => addBurgerinCart()}
     />,
@@ -99,7 +102,7 @@ const BurgerCard = (props) => {
         cover={<img alt="burger" src={image} />}
         actions={user.isAdmin ? actionsAdmin : actionsUser}
       >
-        <Meta title={title} description={description} />
+        <Meta title={title} description={description} data-cy="title-burger" />
         <div className="flex">
           <InputNumber
             min={1}

@@ -59,6 +59,7 @@ const Header = () => {
                   logout();
                   redirectHome();
                 }}
+                data-cy="deconnexion"
               >
                 Se deconnecter
               </Button>
