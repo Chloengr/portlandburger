@@ -1,11 +1,45 @@
-describe('login works', () => {
-  it('redirects to protected route', () => {
-    cy.visit('/');
-    cy.get('#basic_username').type('test');
-    cy.get('#basic_password').type('test');
+describe("login works", () => {
+  beforeEach(() => {
+    cy.visit("/")
+      .getDataCy("username-input")
+      .clear("")
+      .getDataCy("password-input")
+      .clear("");
+  });
 
-    cy.get('.ant-btn-round').click();
+  it("should not login if credentials are wrong", () => {
+    cy.getDataCy("username-input")
+      .type("fake")
+      .getDataCy("password-input")
+      .type("fake")
 
-    cy.contains(/burgers/);
+      .getDataCy("submit-login")
+      .click()
+      .url()
+      .should("eq", "http://localhost:3000/");
+  });
+
+  it("should login as user if credentials are good", () => {
+    cy.getDataCy("username-input")
+      .type("user")
+      .getDataCy("password-input")
+      .type("password")
+
+      .getDataCy("submit-login")
+      .click()
+      .url()
+      .should("include", "/burgers");
+  });
+
+  it("should login as admin if credentials are good", () => {
+    cy.getDataCy("username-input")
+      .type("admin")
+      .getDataCy("password-input")
+      .type("password")
+
+      .getDataCy("submit-login")
+      .click()
+      .url()
+      .should("include", "/burgers");
   });
 });

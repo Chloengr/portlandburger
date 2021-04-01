@@ -1,8 +1,6 @@
-import { Button, Form, Input, Radio } from "antd";
-import { useState } from "react";
-import { useHistory } from "react-router";
+import { Button, Form, Input, message } from "antd";
+import { useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-
 import { layout, tailLayout } from "../utils/utils";
 
 const RegisterForm = () => {
@@ -13,10 +11,13 @@ const RegisterForm = () => {
   const redirectToBurgers = () => {
     history.push("/burgers");
   };
-
   const onFinish = (values) => {
-    register(values);
-    redirectToBurgers();
+    try {
+      register(values);
+      redirectToBurgers();
+    } catch (e) {
+      message.error(e);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {

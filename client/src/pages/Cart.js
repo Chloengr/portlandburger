@@ -43,7 +43,7 @@ const ShoppingCart = () => {
   const { carts } = useApi();
   const { user } = useAuth();
 
-  const { isLoading, data, error } = carts.useGetUserPanier(user.id);
+  const { isLoading, data, error } = carts.useGetUserCart(user.id);
   const {
     mutate: mutateDelete,
     status: statusDelete,
