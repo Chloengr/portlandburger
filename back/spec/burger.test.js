@@ -8,9 +8,36 @@ const factory = require('factory-girl').factory
 
 
 
+/* Permet de se connecter */
+const account = {
+    "username": "user",
+    "password": "user"
+};
 
+/* Permet de créer un burger */
+const burger = {
+    "title": "BurgerMomo",
+    "description": "c bon",
+    "price": 200.99
+};
+
+/* Permet de modifier un burger */
+const burger_update = {
+    "title": "titre mod",
+    "description": "c bon",
+    "price": 200.99
+};
+
+/* Permet de récupérer le token de la connexion */
+let access_token = null;
+
+/* Permet de récupérer le burger de la requête POST */
+let burger_post = null;
 
 beforeAll(async() => {
+    burgers = await factory.createMany('Burgers', 20)
+    responseLogin= await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
+    access_token = responseLogin.body.access_token;
     //await cleanDb(db, 'burger');
 });
 
@@ -20,67 +47,63 @@ afterAll(async() => {
 });
 
 describe('get burgers', () => {
-
-    const account = {
-        "username": "user",
-        "password": "user"
-    };
-    const burger = {
-        "title": "BurgerMomo",
-        "description": "c bon",
-        "price": 200.99
-    }
-    const burger2 = {
-        "title": "titre mod",
-        "description": "c bon",
-        "price": 200.99
-    }
     
     beforeEach(async() => {
-        burgers = await factory.createMany('Burgers', 20)
-        
-
-        responsePost = await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
-        const access_token = responsePost.body.access_token;
         responseBurgers = await request(app).get('/burgers').set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
-        responsePostBurger = await request(app).post('/burgers/').set('Authorization', `Bearer ${access_token}`).set('Content-Type', 'application/json').send(burger).catch((e) => console.log(e));  
-        burgerPost = await db.Burger.findOne({ where: {id: responsePostBurger.body.id}});
-
-        //burgerUpdate = await db.Burger.findOne({ where: {id: responsePostBurger.body.id}});
-        //burgerUpdate.title = "titre modifié";
-        
-        responsePutBurger = await request(app).put(`/burgers/${burgerPost.id}`).set('Authorization', `Bearer ${access_token}`).set('Content-Type', 'application/json').send(burger2).catch((e) => console.log(e));
-
-        responseDeleteBurgers = await request(app).delete(`/burgers/${burgerPost.id}`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
-
-        burgerDelete = await db.Burger.findOne({ where: {id: burgerPost.id}});
     })
 
     test('Burger CRUD Response', async() => {
-        expect(responsePost.statusCode).toBe(200);
-
         expect(responseBurgers.statusCode).toBe(200);
 
         expect(responseBurgers.body.length).toBe(40);
+    });
+});
 
+describe('post burgers', () => {
+    
+    beforeEach(async() => {
+        responsePostBurger = await request(app).post('/burgers/').set('Authorization', `Bearer ${access_token}`).set('Content-Type', 'application/json').send(burger).catch((e) => console.log(e));  
+        burger_post = await db.Burger.findOne({ where: {id: responsePostBurger.body.id}});
+
+    })
+
+    test('Burger CRUD Post Response', async() => {
         expect(responsePostBurger.statusCode).toBe(200);
 
-        expect(burgerPost.title).toBe(burger.title);
+        expect(burger_post.title).toBe(burger.title);
+        
+    });
+});
+
+describe('put burgers', () => {
+    
+    beforeEach(async() => {
+        responsePutBurger = await request(app).put(`/burgers/${burger_post.id}`).set('Authorization', `Bearer ${access_token}`).set('Content-Type', 'application/json').send(burger_update).catch((e) => console.log(e));
+    })
+
+    test('Burger CRUD Response', async() => {
 
         expect(responsePutBurger.statusCode).toBe(200);
 
-        expect(responsePutBurger.body.title).toBe(burger2.title);
+        expect(responsePutBurger.body.title).toBe(burger_update.title);
 
-        expect(responsePutBurger.body.title === burgerPost.title).toBe(false);
+        expect(responsePutBurger.body.title === burger_post.title).toBe(false);
 
-        //expect(responsePutBurger.body.description === burgerPost.description).toBe(true);
+        expect(responsePutBurger.body.price === burger_post.price).toBe(true);
 
-        expect(responsePutBurger.body.price === burgerPost.price).toBe(true);
+    });
+});
 
+describe('delete burgers', () => {
+    
+    beforeEach(async() => {
+        responseDeleteBurgers = await request(app).delete(`/burgers/${burger_post.id}`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        burgerDelete = await db.Burger.findOne({ where: {id: burger_post.id}});
+    })
+
+    test('Burger CRUD Response', async() => {
         expect(responseDeleteBurgers.statusCode).toBe(200);
 
-        expect(burgerDelete === null ).toBe(true);
-
-        
+        expect(burgerDelete === null).toBe(true);
     });
 });

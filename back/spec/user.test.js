@@ -1,4 +1,4 @@
-/*
+
 const request = require('supertest')
 const app = require('../app')
 const db = require('../models');
@@ -13,21 +13,19 @@ afterAll(async() => {
     // await db.close()
 });
 
-describe('get burgers', () => {
+describe('Register', () => {
 
     const account = {
-        "username": "user",
-        "password": "user"
+        "username": "register",
+        "password": "register"
     };
 
     beforeEach(async() => {
-        responsePost = await request(app).post('/users/login').set('Content-Type', 'application/vnd.api+json').send(account).catch((e) => console.log(e));
+        responsePost = await request(app).post('/users/register').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
     })
 
     test('Register Response', async() => {
         expect(responsePost.statusCode).toBe(200);
-        expect(responsePost.body.username).toBe(account.data.attributes.email);
-        expect(responsePost.body.password == account.data.attributes.password).toBe(false); //Car crypté
+        expect(responsePost.body.role).toBe('USER');
     });
 });
-*/

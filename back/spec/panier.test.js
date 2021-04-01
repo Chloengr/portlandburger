@@ -6,9 +6,24 @@ const cleanDb = require('./helpers/cleanDb')
 require('./factories/burger').factory
 const factory = require('factory-girl').factory
 
+/* Permet de se connecter */
+const account = {
+    "username": "user",
+    "password": "user"
+};
+
+
+/* Permet de récupérer le token de la connexion */
+let access_token = null;
+/* Permet de récupérer l'id de la connexion */
+let user_id = null;
 
 beforeAll(async () => {
     await cleanDb(db);
+
+    responseLogin= await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
+    access_token = responseLogin.body.access_token;
+    user_id = responseLogin.body.id;
 });
 
 afterAll(async () => {
@@ -22,19 +37,18 @@ function getRandomArbitrary(max) {
 
 describe('Get and Add Burgers in Carts', () => {
 
-    const account = {
-        "username": "user",
-        "password": "user"
-    };
+    /* Permet d'initier un panier pour mon utilisateur */
     const cart = {
         "UserId": 1,
     };
 
+    /* Permet d'ajouter un burger au panier de mon utilisateur */
     const burger1_cart = {
         "UserId": 1,
         "BurgerId": 1,
         "qte": 3
     }
+    /* Permet d'ajouter un autre burger au panier de mon utilisateur */
     const burger2_cart = {
         "UserId": 1,
         "BurgerId": 1
@@ -44,12 +58,10 @@ describe('Get and Add Burgers in Carts', () => {
         await factory.createMany('Burgers', 20)
 
 
-        /* Je me connecte pour un token */
-        responseLogin = await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
-        const access_token = responseLogin.body.access_token;
-        cart.UserId = responseLogin.body.id;
-        burger1_cart.UserId = responseLogin.body.id;
-        burger2_cart.UserId = responseLogin.body.id;
+        /* Je récupère l'id de la connexion */
+        cart.UserId = user_id;
+        burger1_cart.UserId = user_id;
+        burger2_cart.UserId = user_id;
 
 
         /* J'obtiens les burgers */
@@ -75,9 +87,7 @@ describe('Get and Add Burgers in Carts', () => {
 
     test('Cart CRUD Response', async () => {
 
-        /* Je me connecte pour un token */
-        expect(responseLogin.statusCode).toBe(200);
-
+        
         /* J'obtiens les burgers */
         expect(responseBurgers.statusCode).toBe(200);
 
@@ -98,22 +108,14 @@ describe('Get and Add Burgers in Carts', () => {
 
 describe('Add/Remove Burger In Carts', () => {
 
-    const account = {
-        "username": "user",
-        "password": "user"
-    };
+    /* Permet d'ajouter une quantité à un burger du panier de mon utilisateur */
     const addburger_cart = {}
+    /* Permet d'enlever une quantité à un burger du panier de mon utilisateur */
     const removeburger_cart = {}
     beforeEach(async () => {
 
-        /* Je me connecte pour un token */
-        responseLogin = await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
-        const access_token = responseLogin.body.access_token;
-        UserId = responseLogin.body.id;
-
-
         /* Je récupère le cart de mon utilisateur */
-        responseCartsofUsers = await request(app).get(`/carts/${UserId}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        responseCartsofUsers = await request(app).get(`/carts/${user_id}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
 
         /* Pour mon premier burger, j'ajoute dans mon cart une quantité  */
         addburger_cart.CartId = responseCartsofUsers.body.cartId;
@@ -127,16 +129,13 @@ describe('Add/Remove Burger In Carts', () => {
         responsePutRemoveBurger = await request(app).put('/carts/burger/remove').set('Content-Type', 'application/json').set('Authorization', `Bearer ${access_token}`).send(removeburger_cart).catch((e) => console.log(e))
 
         /* Je récupère le cart de mon utilisateur où maintenant on a plus que 1 burger  */
-        responseCartsUsers = await request(app).get(`/carts/${UserId}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        responseCartsUsers = await request(app).get(`/carts/${user_id}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
 
 
     });
 
     test('Crud Add/Remove Burger in Cart', () => {
-        /* Je me connecte pour un token */
-        expect(responseLogin.statusCode).toBe(200);
-
-
+        
         /* Je récupère le cart de mon utilisateur */
         expect(responseCartsofUsers.statusCode).toBe(200);
         expect(responseCartsofUsers.body.cart.length).toStrictEqual(2);
@@ -158,38 +157,24 @@ describe('Add/Remove Burger In Carts', () => {
 })
 
 describe('Delete Carts', () => {
-
-    const account = {
-        "username": "user",
-        "password": "user"
-    };
-
+    
     beforeEach(async () => {
 
-        /* Je me connecte pour un token */
-        responseLogin = await request(app).post('/users/login').set('Content-Type', 'application/json').send(account).catch((e) => console.log(e));
-        const access_token = responseLogin.body.access_token;
-        UserId = responseLogin.body.id;
-
-
         /* Je récupère le cart de mon utilisateur */
-        responseCartsofUsers = await request(app).get(`/carts/${UserId}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        responseCartsofUsers = await request(app).get(`/carts/${user_id}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
 
 
         /* Je supprime mon cart  */
-        responseCartsDeleted = await request(app).delete(`/carts/${UserId}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        responseCartsDeleted = await request(app).delete(`/carts/${user_id}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
 
 
         /* J'obtiens le cart de mon utilisateur supprimer mais le serveur regenere un cart  */
-        responseCartsUsersIDDeleted = await request(app).get(`/carts/${UserId}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
+        responseCartsUsersIDDeleted = await request(app).get(`/carts/${user_id}/`).set('Authorization', `Bearer ${access_token}`).set('Accept', 'application/json');
    
 
     });
 
     test('Delete Cart', () => {
-        /* Je me connecte pour un token */
-        expect(responseLogin.statusCode).toBe(200);
-
 
         /* Je récupère le cart de mon utilisateur */
         expect(responseCartsofUsers.statusCode).toBe(200);
