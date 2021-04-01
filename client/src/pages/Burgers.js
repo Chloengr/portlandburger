@@ -24,7 +24,11 @@ const Burgers = () => {
         <Row justify="center" align="top" style={{ marginBottom: "2rem" }}>
           {user.isAdmin && (
             <>
-              <Button onClick={() => setIsModalVisible(true)} shape="round">
+              <Button
+                onClick={() => setIsModalVisible(true)}
+                shape="round"
+                data-cy="add-burger-btn"
+              >
                 Ajouter un burger
               </Button>
               <AddModal

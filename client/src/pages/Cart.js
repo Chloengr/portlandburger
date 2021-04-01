@@ -32,6 +32,7 @@ const ShoppingCart = () => {
           <Button
             type="danger"
             shape="circle"
+            data-cy="delete-burger-in-cart"
             icon={<DeleteOutlined />}
             onClick={() => deleteBurger(rowKey.burgerId)}
           />
@@ -53,7 +54,7 @@ const ShoppingCart = () => {
   const deleteBurger = (burgerId) => {
     try {
       mutateDelete({
-        PanierId: data.panierId,
+        CartId: data.cartId,
         BurgerId: burgerId,
       });
     } catch (e) {
@@ -76,15 +77,15 @@ const ShoppingCart = () => {
       };
     });
   };
-  
   return (
     <>
       <Header />
       <div className="container">
         <h1 style={{ marginTop: "4rem" }}>Récapitulatif de votre commande</h1>
         <Table
+          data-cy="cart-table"
           columns={columns}
-          dataSource={formatData(data?.panier)}
+          dataSource={formatData(data?.cart)}
           rowKey={(obj) => obj.burgerId}
         />
         <h2>Total {data?.total} €</h2>
