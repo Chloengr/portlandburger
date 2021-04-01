@@ -1,5 +1,5 @@
-import { Button, Form, Input } from "antd";
-import { useHistory } from "react-router";
+import { Button, Form, Input, message } from "antd";
+import { useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { layout, tailLayout } from "../utils/utils";
 
@@ -12,14 +12,18 @@ const LoginForm = () => {
   };
 
   const onFinish = (values) => {
-    login(values);
-    redirectToBurgers();
+    try {
+      login(values);
+      redirectToBurgers();
+    } catch (e) {
+      message.error(e);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  
+
   return (
     <Form
       style={{
@@ -36,7 +40,7 @@ const LoginForm = () => {
         name="username"
         rules={[{ required: true, message: "Please input your username!" }]}
       >
-        <Input />
+        <Input data-cy="username-input" />
       </Form.Item>
 
       <Form.Item
@@ -44,11 +48,16 @@ const LoginForm = () => {
         name="password"
         rules={[{ required: true, message: "Please input your password!" }]}
       >
-        <Input.Password />
+        <Input.Password data-cy="password-input" />
       </Form.Item>
 
       <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit" shape="round">
+        <Button
+          type="primary"
+          htmlType="submit"
+          shape="round"
+          data-cy="submit-login"
+        >
           Submit
         </Button>
       </Form.Item>

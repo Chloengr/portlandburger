@@ -1,19 +1,10 @@
-import { Radio } from "antd";
+import { Button } from "antd";
 import { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 
 const Homepage = () => {
-  const [isRegister, setIsRegister] = useState(true);
-
-  const onChange = (e) => {
-    console.log(`radio checked:${e.target.value}`);
-    if (e.target.value === "login") {
-      return setIsRegister(false);
-    } else {
-      return setIsRegister(true);
-    }
-  };
+  const [isRegister, setIsRegister] = useState(false);
 
   return (
     <>
@@ -26,12 +17,17 @@ const Homepage = () => {
         }}
       >
         <h1 className="title">Bienvenue cher ami !</h1>
-        <Radio.Group onChange={onChange}>
-          <Radio.Button value="resgiter">Inscription</Radio.Button>
-          <Radio.Button value="login">Connexion</Radio.Button>
-        </Radio.Group>
+
+        <h2>Connecte-toi</h2>
+        <LoginForm />
+
+        <Button
+          onClick={() => setIsRegister(true)}
+          style={{ marginBottom: "2rem" }}
+        >
+          Je ne suis pas encore inscris
+        </Button>
         {isRegister && <RegisterForm />}
-        {!isRegister && <LoginForm />}
       </div>
     </>
   );
