@@ -32,6 +32,7 @@ const ShoppingCart = () => {
           <Button
             type="danger"
             shape="circle"
+            data-cy="delete-burger-in-cart"
             icon={<DeleteOutlined />}
             onClick={() => deleteBurger(rowKey.burgerId)}
           />
